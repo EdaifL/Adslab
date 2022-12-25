@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven {url 'https://artifact.bytedance.com/repository/pangle'}
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {url 'https://artifact.bytedance.com/repository/pangle'}
+    }
+}
+rootProject.name = "Adslab"
+include ':app'
+include ':adsnets'
+include 'unity-ads.aar'
+
