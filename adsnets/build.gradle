@@ -43,7 +43,7 @@ dependencies {
     //admob
     implementation 'com.google.android.gms:play-services-ads:21.2.0'
     //Unity
-    implementation files('libs/unity-ads.aar')
+    implementation 'com.github.Unity-Technologies:unity-ads-android:4.4.1'
     implementation 'com.android.volley:volley:1.2.1'
     //pangle
     implementation 'com.pangle.global:ads-sdk:4.7.0.6'
