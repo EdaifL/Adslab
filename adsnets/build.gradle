@@ -50,3 +50,16 @@ dependencies {
     //glide
     implementation 'com.github.bumptech.glide:glide:4.14.2'
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.EdaifL' //your git id
+                artifactId = 'Adslab' //your-repository
+                version = '1.0.0' // As same as the Tag
+            }
+        }
+    }
+}

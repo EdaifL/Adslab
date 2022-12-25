@@ -3,23 +3,7 @@ plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
     id 'maven-publish'
-    id 'java'
+
 
 }
-afterEvaluate {
-    publishing {
-        publications {
-            marvenJava(MavenPublication) {
-                from components.java
-                groupId = 'com.github.EdaifL' //your git id
-                artifactId = 'Adslab' //your-repository
-                version = '1.0.0' // As same as the Tag
 
-            }
-        }
-    }
-}
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
