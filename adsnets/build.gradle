@@ -58,7 +58,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = 'com.github.EdaifL' //your git id
-                artifactId = 'Adslab' //your-repository
+                artifactId = 'adsnets' //your-repository
                 version = '1.0.0' // As same as the Tag
             }
         }
