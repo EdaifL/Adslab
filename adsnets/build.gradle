@@ -53,6 +53,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     //pangle
     implementation 'com.pangle.global:ads-sdk:4.7.0.6'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     //glide
     implementation 'com.github.bumptech.glide:glide:4.14.2'
 }
@@ -64,7 +65,7 @@ afterEvaluate {
             release(MavenPublication) {
                 groupId = 'com.github.EdaifL' //your git id
                 artifactId = 'Adslab' //your-repository
-                version = '1.0.0' // As same as the Tag
+                version = '1.2.0' // As same as the Tag
 
                 afterEvaluate {
                     from components.release
