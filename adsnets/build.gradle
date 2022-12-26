@@ -59,7 +59,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.EdaifL' //your git id
                 artifactId = 'Adslab' //your-repository
-                version = '1.0.0' // As same as the Tag
+                // As same as the Tag
             }
         }
     }
