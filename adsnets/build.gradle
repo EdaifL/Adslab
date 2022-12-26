@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.library'
-    id 'maven-publish'
+
 }
 
 
@@ -59,7 +59,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.EdaifL' //your git id
                 artifactId = 'Adslab' //your-repository
-                // As same as the Tag
+                version = '1.0.0' // As same as the Tag
             }
         }
     }
