@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +56,7 @@ public class YandexClass implements AdsManage {
             @Override
             public void onInitializationCompleted() {
                 Log.d(YANDEX_MOBILE_ADS_TAG, "SDK initialized");
+                Toast.makeText(context, "Ads insfdskjhghklsdbkigdioshfdkj", Toast.LENGTH_LONG).show();
             }
         });
     }
