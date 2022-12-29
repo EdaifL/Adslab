@@ -117,14 +117,14 @@ public class FaceAds implements AdsManage {
         @Override
         public void onInterstitialDismissed(Ad ad) {
 
-            if ( dialog !=null && dialog.isShowing()==true) {
+            if ( dialog !=null && dialog.isShowing()) {
                 dialog.dismiss(); }
             mContext.startActivity(mIntent);
         }
         @Override
         public void onError(Ad ad, AdError adError) {
 
-            if ( dialog !=null && dialog.isShowing()==true) {
+            if ( dialog !=null && dialog.isShowing()) {
                 dialog.dismiss();
             }
 

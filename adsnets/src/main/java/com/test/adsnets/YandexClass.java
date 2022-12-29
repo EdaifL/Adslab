@@ -109,7 +109,7 @@ public class YandexClass implements AdsManage {
 
             @Override
             public void onAdDismissed() {
-                if ( dialog !=null && dialog.isShowing()==true) {
+                if ( dialog !=null && dialog.isShowing()) {
                     dialog.dismiss(); }
                 context.startActivity(MIntent);
             }
@@ -163,49 +163,7 @@ public class YandexClass implements AdsManage {
 
     @Override
     public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
-        BannerAdView mBannerAdView = new BannerAdView(context);
-        mBannerAdView.setAdUnitId(NativeBanner_Unite);
-        mBannerAdView.setAdSize(AdSize.stickySize(AdSize.FULL_SCREEN.getWidthInPixels(context)));
 
-        // Creating an ad targeting object.
-        final AdRequest adRequest = new AdRequest.Builder().build();
-
-        // Registering a listener for tracking events in the banner ad.
-        mBannerAdView.setBannerAdEventListener(new BannerAdEventListener() {
-            @Override
-            public void onAdLoaded() {
-
-            }
-
-            @Override
-            public void onAdFailedToLoad(AdRequestError adRequestError) {
-
-            }
-
-            @Override
-            public void onAdClicked() {
-
-            }
-
-            @Override
-            public void onLeftApplication() {
-
-            }
-
-            @Override
-            public void onReturnedToApplication() {
-
-            }
-
-            @Override
-            public void onImpression(@Nullable ImpressionData impressionData) {
-
-            }
-        });
-
-        // Loading ads.
-        mBannerAdView.loadAd(adRequest);
-        linearLayout.addView(mBannerAdView);
     }
 
 
