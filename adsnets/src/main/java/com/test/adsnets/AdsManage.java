@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 public interface AdsManage {
     void init(Context context);
     void initDialog(Context context);
+    void Show_OpenApp(Context context);
     void Show_Banner(Activity activity, LinearLayout linearLayout);
     void Show_Interstitial(Context context, Intent MIntent);
     void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView);

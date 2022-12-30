@@ -196,6 +196,11 @@ public class PangleAd implements AdsManage {
     }
 
     @Override
+    public void Show_OpenApp(Context context) {
+        ShowOpenApp((Activity) context);
+    }
+
+    @Override
     public void Show_Banner(Activity activity, LinearLayout linearLayout) {
         PAGBannerRequest request = new PAGBannerRequest(PAGBannerSize.BANNER_W_320_H_50);
         PAGBannerAd.loadAd(BannerUnit, request,

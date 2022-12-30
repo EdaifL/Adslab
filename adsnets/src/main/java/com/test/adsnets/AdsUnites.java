@@ -46,7 +46,9 @@ public class AdsUnites {
     public String getAdNetwork() {
        return TAG_NETWORK;
     }
-
+    public String getTagOpenAppId() {
+        return TAG_OPEN_APP_ID;
+    }
     public String getBanner_id() {
        return TAG_BANNER;
     }
@@ -143,6 +145,8 @@ public class AdsUnites {
             return unity.getInstance(config);
         }else if (config.getAdNetwork().toLowerCase().equals("pangle")){
             return PangleAd.getInstance(config);
+        }else if (config.getAdNetwork().toLowerCase().equals("applovin")) {
+            return ApplovinAd.getInstance(config);
         } else{
             throw  new IllegalArgumentException("Not Valid Ads  Network");
         }

@@ -166,5 +166,8 @@ public class YandexClass implements AdsManage {
 
     }
 
+    @Override
+    public void Show_OpenApp(Context context) {
 
+    }
 }

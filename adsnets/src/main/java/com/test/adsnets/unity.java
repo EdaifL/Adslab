@@ -57,6 +57,11 @@ public class unity implements AdsManage {
     }
 
     @Override
+    public void Show_OpenApp(Context context) {
+
+    }
+
+    @Override
     public void Show_Banner(Activity activity, LinearLayout linearLayout) {
         BannerView topBanner = new BannerView(activity, BannerUnit, new UnityBannerSize(320, 50));
         linearLayout.setGravity(Gravity.CENTER);

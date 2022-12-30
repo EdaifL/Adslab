@@ -68,6 +68,11 @@ public class FaceAds implements AdsManage {
     }
 
     @Override
+    public void Show_OpenApp(Context context) {
+
+    }
+
+    @Override
     public void Show_Banner(Activity activity, LinearLayout linearLayout) {
 
         FBadView = new com.facebook.ads.AdView(activity,BannerUnit, AdSize.BANNER_HEIGHT_50);

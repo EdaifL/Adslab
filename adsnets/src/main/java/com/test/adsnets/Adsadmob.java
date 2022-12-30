@@ -78,6 +78,12 @@ public class Adsadmob implements AdsManage{
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
+    @Override
+    public void Show_OpenApp(Context context) {
+
+    }
+
     @Override
     public void Show_Banner(Activity activity, LinearLayout linearLayout) {
         AdView adView = new AdView(activity);
