@@ -5,6 +5,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -44,6 +48,7 @@ public class Adsadmob implements AdsManage{
     private String InterstitialUnit ;
     private String NativeUnit ;
     private NativeAd nativeAd;
+    private String appId;
     private  int Requests = 0;
     private  float Percentage;
     //endregion
@@ -54,12 +59,27 @@ public class Adsadmob implements AdsManage{
             admob.BannerUnit = config.getBanner_id();
             admob.InterstitialUnit = config.getInterstitial_id();
             admob.NativeUnit = config.getNative_Id();
+            admob.appId = config.getAppId();
         }
         return admob;
     }
 
     @Override
     public void init(Context context) {
+        String TAG = "admob";
+        try {
+            ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            String myApiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
+            Log.d(TAG, "Name Found: " + myApiKey);
+            ai.metaData.putString("com.google.android.gms.ads.APPLICATION_ID", appId);
+            String ApiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
+            Log.d(TAG, "ReNamed Found: " + ApiKey);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+        }
         MobileAds.initialize(context, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {

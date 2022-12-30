@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -225,17 +226,13 @@ public class ApplovinAd implements AdsManage {
 
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
-
-    }
-
-    @Override
-    public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
         nativeAdLoader = new MaxNativeAdLoader( Native_Unite, context );
         nativeAdLoader.setNativeAdListener( new MaxNativeAdListener()
         {
             @Override
             public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, final MaxAd ad)
             {
+                if (imageView !=null){imageView.setVisibility(View.GONE);}
                 nativeAd = ad;
                 linearLayout.removeAllViews();
                 linearLayout.addView( nativeAdView );
@@ -254,6 +251,11 @@ public class ApplovinAd implements AdsManage {
         } );
 
         nativeAdLoader.loadAd(createNativeAdView(context));
+    }
+
+    @Override
+    public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
+
     }
     private MaxNativeAdView createNativeAdView(Context context)
     {

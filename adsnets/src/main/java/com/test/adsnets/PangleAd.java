@@ -71,48 +71,6 @@ public class PangleAd implements AdsManage {
                 .build();
     }
 
-    public void ShowOpenApp(Activity activity){
-        if (!openappShow){
-        ProgressDialog dialog2 = new ProgressDialog(activity);
-        dialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog2.setMessage("Loading  Please wait...");
-        dialog2.setIndeterminate(true);
-        dialog2.setCanceledOnTouchOutside(false);
-        dialog2.show();
-        PAGAppOpenRequest request = new PAGAppOpenRequest();
-        request.setTimeout(3000);
-        PAGAppOpenAd.loadAd(OpenAppId, request, new PAGAppOpenAdLoadListener() {
-            @Override
-            public void onError(int code, String message) {
-                dialog2.dismiss();
-            }
-
-            @Override
-            public void onAdLoaded(PAGAppOpenAd appOpenAd) {
-                appOpenAd.setAdInteractionListener(new PAGAppOpenAdInteractionListener(){
-
-                    @Override
-                    public void onAdShowed() {
-                        openappShow = true;
-
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-
-                    }
-
-                    @Override
-                    public void onAdDismissed() {
-                        dialog2.dismiss();
-                    }
-                });
-                appOpenAd.show(activity);
-            }
-        });
-        }
-
-    }
     static View nativeAdView;
     static List<View> creativeViewList = new ArrayList<>();
     static List<View> clickViewList = new ArrayList<>();
@@ -197,7 +155,40 @@ public class PangleAd implements AdsManage {
 
     @Override
     public void Show_OpenApp(Context context) {
-        ShowOpenApp((Activity) context);
+        if (!openappShow){
+            initDialog(context);
+            PAGAppOpenRequest request = new PAGAppOpenRequest();
+            request.setTimeout(3000);
+            PAGAppOpenAd.loadAd(OpenAppId, request, new PAGAppOpenAdLoadListener() {
+                @Override
+                public void onError(int code, String message) {
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onAdLoaded(PAGAppOpenAd appOpenAd) {
+                    appOpenAd.setAdInteractionListener(new PAGAppOpenAdInteractionListener(){
+
+                        @Override
+                        public void onAdShowed() {
+                            openappShow = true;
+
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+
+                        }
+
+                        @Override
+                        public void onAdDismissed() {
+                            dialog.dismiss();
+                        }
+                    });
+                    appOpenAd.show((Activity) context);
+                }
+            });
+        }
     }
 
     @Override
