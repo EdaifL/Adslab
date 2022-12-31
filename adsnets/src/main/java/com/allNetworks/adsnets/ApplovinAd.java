@@ -139,12 +139,6 @@ public class ApplovinAd implements AdsManage {
 
             @Override
             public void onAdLoaded(MaxAd ad) {
-                int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                int heightPx = activity.getResources().getDimensionPixelSize( R.dimen.banner_height );
-                adView.setLayoutParams( new ViewGroup.LayoutParams( width, heightPx ) );
-                adView.setBackgroundColor(Color.WHITE);
-                linearLayout.addView(adView);
-
             }
 
             @Override
@@ -172,7 +166,11 @@ public class ApplovinAd implements AdsManage {
 
             }
         });
-
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int heightPx = activity.getResources().getDimensionPixelSize( R.dimen.banner_height );
+        adView.setLayoutParams( new ViewGroup.LayoutParams( width, heightPx ) );
+        adView.setBackgroundColor(Color.WHITE);
+        linearLayout.addView(adView);
         adView.loadAd();
     }
 
