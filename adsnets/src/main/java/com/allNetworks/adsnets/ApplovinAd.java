@@ -232,7 +232,6 @@ public class ApplovinAd implements AdsManage {
             {
                 if (imageView !=null){imageView.setVisibility(View.GONE);}
                 nativeAd = ad;
-                linearLayout.removeAllViews();
                 linearLayout.addView( nativeAdView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 900) );
 
             }
