@@ -1,12 +1,11 @@
-package com.test.adslab;
+package com.allNetworks.adslab;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.test.adsnets.Ads;
-import com.test.adsnets.AdsManage;
-import com.test.adsnets.AdsUnites;
+import com.allNetworks.adsnets.Ads;
+import com.allNetworks.adsnets.AdsUnites;
 
 public class MainActivity extends AppCompatActivity {
 

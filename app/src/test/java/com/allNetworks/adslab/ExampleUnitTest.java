@@ -1,4 +1,4 @@
-package com.test.adsnets;
+package com.allNetworks.adslab;
 
 import org.junit.Test;
 

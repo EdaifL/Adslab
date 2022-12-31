@@ -1,4 +1,4 @@
-package com.test.adsnets;
+package com.allNetworks.adsnets;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 

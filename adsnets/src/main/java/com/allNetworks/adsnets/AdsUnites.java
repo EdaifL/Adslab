@@ -1,4 +1,4 @@
-package com.test.adsnets;
+package com.allNetworks.adsnets;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,13 +32,15 @@ public class AdsUnites {
     private static String TAG_OPEN_APP_ID;
 
 
-    public AdsUnites(String TAG_NETWORK, String TAG_BANNER, String TAG_NATIVE_BANNER, String TAG_NATIVE, String TAG_INTERSTITIAL, String TAG_APP_ID) {
+    public AdsUnites(String TAG_NETWORK,String TAG_OPEN_APP_ID, String TAG_BANNER, String TAG_NATIVE_BANNER, String TAG_NATIVE, String TAG_INTERSTITIAL, String TAG_APP_ID) {
         this.TAG_NETWORK = TAG_NETWORK;
         this.TAG_BANNER = TAG_BANNER;
         this.TAG_NATIVE_BANNER = TAG_NATIVE_BANNER;
         this.TAG_NATIVE = TAG_NATIVE;
         this.TAG_INTERSTITIAL = TAG_INTERSTITIAL;
         this.TAG_APP_ID = TAG_APP_ID;
+        this.TAG_OPEN_APP_ID = TAG_OPEN_APP_ID;
+
 
     }
 

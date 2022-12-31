@@ -1,4 +1,4 @@
-package com.test.adsnets;
+package com.allNetworks.adsnets;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

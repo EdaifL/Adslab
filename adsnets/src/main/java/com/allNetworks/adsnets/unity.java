@@ -1,4 +1,4 @@
-package com.test.adsnets;
+package com.allNetworks.adsnets;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

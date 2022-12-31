@@ -1,4 +1,4 @@
-package com.test.adsnets;
+package com.allNetworks.adsnets;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -18,7 +18,6 @@ import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxAppOpenAd;
 import com.applovin.mediation.ads.MaxInterstitialAd;
-import com.applovin.mediation.nativeAds.MaxNativeAd;
 import com.applovin.mediation.nativeAds.MaxNativeAdListener;
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
@@ -226,7 +225,6 @@ public class ApplovinAd implements AdsManage {
 
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
-        FrameLayout frameLayout = new FrameLayout(context);
         nativeAdLoader = new MaxNativeAdLoader( Native_Unite, context );
         nativeAdLoader.setNativeAdListener( new MaxNativeAdListener()
         {
@@ -235,9 +233,9 @@ public class ApplovinAd implements AdsManage {
             {
                 if (imageView !=null){imageView.setVisibility(View.GONE);}
                 nativeAd = ad;
-                frameLayout.removeAllViews();
-                frameLayout.addView( nativeAdView );
-                linearLayout.addView(linearLayout);
+                linearLayout.removeAllViews();
+                linearLayout.addView( nativeAdView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 900) );
+
             }
 
             @Override
@@ -251,17 +249,7 @@ public class ApplovinAd implements AdsManage {
 
             }
         } );
-
-        nativeAdLoader.loadAd(createNativeAdView(context));
-    }
-
-    @Override
-    public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
-
-    }
-    private MaxNativeAdView createNativeAdView(Context context)
-    {
-        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder( R.layout.applovin_native )
+       MaxNativeAdView max =  new MaxNativeAdView(new MaxNativeAdViewBinder.Builder(R.layout.applovinnative )
                 .setTitleTextViewId( R.id.title_text_view )
                 .setBodyTextViewId( R.id.body_text_view )
                 .setAdvertiserTextViewId( R.id.advertiser_textView )
@@ -269,8 +257,17 @@ public class ApplovinAd implements AdsManage {
                 .setMediaContentViewGroupId( R.id.media_view_container )
                 .setOptionsContentViewGroupId( R.id.ad_options_view )
                 .setCallToActionButtonId( R.id.cta_button )
-                .build();
-
-        return new MaxNativeAdView( binder, context );
+                .build(),context);
+        nativeAdLoader.loadAd();
     }
+
+
+
+
+
+    @Override
+    public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
+
+    }
+
 }

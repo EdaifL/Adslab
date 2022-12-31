@@ -1,4 +1,4 @@
-package com.test.adslab;
+package com.allNetworks.adsnets;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.test.adslab", appContext.getPackageName());
+        assertEquals("com.allNetworks.adsnets.test", appContext.getPackageName());
     }
 }
