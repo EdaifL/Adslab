@@ -226,6 +226,7 @@ public class ApplovinAd implements AdsManage {
 
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
+        FrameLayout frameLayout = new FrameLayout(context);
         nativeAdLoader = new MaxNativeAdLoader( Native_Unite, context );
         nativeAdLoader.setNativeAdListener( new MaxNativeAdListener()
         {
@@ -234,8 +235,9 @@ public class ApplovinAd implements AdsManage {
             {
                 if (imageView !=null){imageView.setVisibility(View.GONE);}
                 nativeAd = ad;
-                linearLayout.removeAllViews();
-                linearLayout.addView( nativeAdView );
+                frameLayout.removeAllViews();
+                frameLayout.addView( nativeAdView );
+                linearLayout.addView(linearLayout);
             }
 
             @Override
