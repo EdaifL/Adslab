@@ -141,9 +141,8 @@ public class ApplovinAd implements AdsManage {
             public void onAdLoaded(MaxAd ad) {
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
                 int heightPx = activity.getResources().getDimensionPixelSize( R.dimen.banner_height );
-                adView.setLayoutParams( new FrameLayout.LayoutParams( width, heightPx ) );
+                adView.setLayoutParams( new ViewGroup.LayoutParams( width, heightPx ) );
                 adView.setBackgroundColor(Color.WHITE);
-                adView.startAutoRefresh();
                 linearLayout.addView(adView);
 
             }
