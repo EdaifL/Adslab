@@ -84,8 +84,9 @@ public class AdsUnites {
                 TAG_NATIVE_BANNER = ads.optString("NativeBannerId");
                 TAG_APP_ID = ads.optString("AppId");
                 TAG_OPEN_APP_ID = ads.optString("OpenAppId");
-                Ads.ads = Switch();
+
                 try {
+                    Ads.ads = Switch();
                     Ads.ads.init(Mycontext);
                 }catch (IllegalArgumentException ignored){
 
