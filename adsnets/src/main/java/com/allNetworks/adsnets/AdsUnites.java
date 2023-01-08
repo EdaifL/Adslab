@@ -90,7 +90,7 @@ public class AdsUnites {
                     Ads.ads.init(Mycontext);
                 }catch (IllegalArgumentException exception){
                     Ads.ads = Null.getInstance();
-                    Toast.makeText(Mycontext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Mycontext, exception.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -155,7 +155,7 @@ public class AdsUnites {
             return PangleAd.getInstance(config);
         }else if (config.getAdNetwork().toLowerCase().equals("applovin")) {
             return ApplovinAd.getInstance(config);
-        }else if (config.getAdNetwork().toLowerCase().equals("")) {
+        }else if (config.getAdNetwork().isEmpty()) {
             return Null.getInstance();
         } else{
             throw  new IllegalArgumentException("Not Valid Ads  Network");
