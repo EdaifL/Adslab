@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -84,12 +85,12 @@ public class AdsUnites {
                 TAG_NATIVE_BANNER = ads.optString("NativeBannerId");
                 TAG_APP_ID = ads.optString("AppId");
                 TAG_OPEN_APP_ID = ads.optString("OpenAppId");
-
                 try {
                     Ads.ads = Switch();
                     Ads.ads.init(Mycontext);
-                }catch (IllegalArgumentException ignored){
-
+                }catch (IllegalArgumentException exception){
+                    Ads.ads = Null.getInstance();
+                    Toast.makeText(Mycontext, exception.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -154,6 +155,8 @@ public class AdsUnites {
             return PangleAd.getInstance(config);
         }else if (config.getAdNetwork().toLowerCase().equals("applovin")) {
             return ApplovinAd.getInstance(config);
+        }else if (config.getAdNetwork().toLowerCase().equals("")) {
+            return Null.getInstance();
         } else{
             throw  new IllegalArgumentException("Not Valid Ads  Network");
         }
