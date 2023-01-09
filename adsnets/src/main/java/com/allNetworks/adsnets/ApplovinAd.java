@@ -73,7 +73,7 @@ public class ApplovinAd implements AdsManage {
 
     @Override
     public void Show_OpenApp(Context context) {
-        if (!IsOpenshowed){
+        if (!IsOpenshowed && !OpenAppId.isEmpty()){
             initDialog(context);
             appOpenAd = new MaxAppOpenAd( OpenAppId, context);
             appOpenAd.setListener(new MaxAdListener() {
@@ -125,6 +125,7 @@ public class ApplovinAd implements AdsManage {
 
     @Override
     public void Show_Banner(Activity activity, LinearLayout linearLayout) {
+        if (!BannerUnit.isEmpty()){
         adView = new MaxAdView( BannerUnit, activity );
         adView.setListener(new MaxAdViewAdListener() {
             @Override
@@ -166,19 +167,21 @@ public class ApplovinAd implements AdsManage {
 
             }
         });
+        adView.loadAd();
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         int heightPx = activity.getResources().getDimensionPixelSize( R.dimen.banner_height );
         adView.setLayoutParams( new ViewGroup.LayoutParams( width, heightPx ) );
         adView.setBackgroundColor(Color.WHITE);
         linearLayout.addView(adView);
-        adView.loadAd();
+        }
+
     }
 
     @Override
     public void Show_Interstitial(Context context, Intent MIntent) {
+        if (!Interstitial_Unit.isEmpty()){
         initDialog(context);
         interstitialAd =new MaxInterstitialAd(Interstitial_Unit, (Activity) context);
-        interstitialAd.loadAd();
         interstitialAd.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
@@ -218,10 +221,15 @@ public class ApplovinAd implements AdsManage {
                 if (adView != null){adView = null;}
             }
         });
+        interstitialAd.loadAd();}
+        else {
+            context.startActivity(MIntent);
+        }
     }
 
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
+        if (!Native_Unite.isEmpty()){
         nativeAdLoader = new MaxNativeAdLoader( Native_Unite, context );
         nativeAdLoader.setNativeAdListener( new MaxNativeAdListener()
         {
@@ -254,7 +262,8 @@ public class ApplovinAd implements AdsManage {
                 .setOptionsContentViewGroupId( R.id.ad_options_view )
                 .setCallToActionButtonId( R.id.cta_button )
                 .build(),context);
-        nativeAdLoader.loadAd();
+        nativeAdLoader.loadAd();}
+
     }
 
 
