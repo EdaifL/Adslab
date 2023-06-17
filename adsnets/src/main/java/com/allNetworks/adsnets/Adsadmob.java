@@ -48,18 +48,19 @@ public class Adsadmob implements AdsManage{
     private String InterstitialUnit ;
     private String NativeUnit ;
     private NativeAd nativeAd;
+    private AdRequest adRequest ;
     private String appId;
     private  int Requests = 0;
     private  float Percentage;
     //endregion
     Activity activity;
-    public static Adsadmob getInstance(AdsUnites config){
+    public static Adsadmob getInstance(NetworkUnitAd unitAd){
         if (admob ==null){
             admob =new Adsadmob();
-            admob.BannerUnit = config.getBanner_id();
-            admob.InterstitialUnit = config.getInterstitial_id();
-            admob.NativeUnit = config.getNative_Id();
-            admob.appId = config.getAppId();
+            admob.BannerUnit = unitAd.getBANNER_Id();
+            admob.InterstitialUnit = unitAd.getINTERSTITIAL_Id();
+            admob.NativeUnit = unitAd.getNATIVE_Id();
+            admob.appId = unitAd.getAPP_ID();
         }
         return admob;
     }
@@ -75,6 +76,7 @@ public class Adsadmob implements AdsManage{
             ai.metaData.putString("com.google.android.gms.ads.APPLICATION_ID", appId);
             String ApiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
             Log.d(TAG, "ReNamed Found: " + ApiKey);
+
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
         } catch (NullPointerException e) {
@@ -85,6 +87,7 @@ public class Adsadmob implements AdsManage{
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+        adRequest = new AdRequest.Builder().build();
     }
     @Override
     public void initDialog(Context context) {
@@ -109,55 +112,90 @@ public class Adsadmob implements AdsManage{
         AdView adView = new AdView(activity);
         adView.setAdSize(AdSize.LARGE_BANNER);
         adView.setAdUnitId(BannerUnit);
-        AdRequest adRequest = new AdRequest.Builder().build();
         //Todo check this out
 
         adView.loadAd(adRequest);
         linearLayout.addView(adView);
     }
+    private boolean isloaded = false;
     @Override
-    public void Show_Interstitial(Context context, Intent MIntent) {
+    public void Show_Interstitial(Context context, Interstital interstital) {
+
         initDialog(context);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        if (isloaded) {
+            mInterstitialAd.show((Activity) context);
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                }
+
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    isloaded = false;
+                    interstital.isShowed();
+
+                }
+            });
+        }else {
+            loadInter(context);
+            InterstitialAd.load(context,InterstitialUnit,adRequest, new InterstitialAdLoadCallback(){
+                @Override
+                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+
+                    interstitialAd.show((Activity) context);
+                    interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                        }
+
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                        }
+
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+                            }
+
+                            interstital.isShowed();
+
+                        }
+                    });
+                }
+                @SuppressLint("SuspiciousIndentation")
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    interstital.fieldToShow();
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public boolean loadInter(Context context) {
         InterstitialAd.load(context,InterstitialUnit,adRequest, new InterstitialAdLoadCallback(){
             @Override
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                if (dialog.isShowing())
-                    dialog.dismiss();
+
                 mInterstitialAd = interstitialAd;
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-                    }
-
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-                    }
-
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        if (dialog.isShowing()){
-                            dialog.dismiss();
-                        }
-
-                            context.startActivity(MIntent);
-
-                    }
-                });
-                mInterstitialAd.show((Activity) context);
-
+                isloaded =true;
             }
             @SuppressLint("SuspiciousIndentation")
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                if (dialog.isShowing())
-                    dialog.dismiss();
-
-                    context.startActivity(MIntent);
-
-
+                isloaded = false;
             }
         });
+        return isloaded;
     }
 
     @Override

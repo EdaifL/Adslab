@@ -3,7 +3,6 @@ package com.allNetworks.adsnets;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,9 +15,9 @@ import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
-public class unity implements AdsManage {
+public class UnityAd implements AdsManage {
     String AppId;
-    private static unity unity;
+    private static UnityAd unity;
     private ProgressDialog dialog;
     private String BannerUnit;
     private String InterstitialUnit;
@@ -27,12 +26,12 @@ public class unity implements AdsManage {
 
 
 
-    public static unity getInstance(AdsUnites config) {
+    public static UnityAd getInstance(NetworkUnitAd unitAd) {
         if (unity == null) {
-            unity = new unity();
-            unity.AppId = config.getAppId();
-            unity.BannerUnit = config.getBanner_id();
-            unity.InterstitialUnit = config.getInterstitial_id();
+            unity = new UnityAd();
+            unity.AppId = unitAd.getAPP_ID();
+            unity.BannerUnit = unitAd.getBANNER_Id();
+            unity.InterstitialUnit = unitAd.getINTERSTITIAL_Id();
         }
         return unity;
     }
@@ -70,17 +69,20 @@ public class unity implements AdsManage {
         topBanner.load();
 
     }
-
+    private boolean isLoaded;
     @Override
-    public void Show_Interstitial(Context context,  Intent MIntent) {
-        initDialog(context);
+    public void Show_Interstitial(Context context, Interstital interstital) {
+              initDialog(context);
+        if (!isLoaded){
+        loadInter(context);
         UnityAds.load(InterstitialUnit, new IUnityAdsLoadListener() {
             @Override
             public void onUnityAdsAdLoaded(String s) {
                 UnityAds.show((Activity) context, InterstitialUnit , new UnityAdsShowOptions(), new IUnityAdsShowListener() {
                     @Override
                     public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
-                        context.startActivity(MIntent);
+                       if (dialog.isShowing()){ dialog.dismiss();}
+                       interstital.fieldToShow();
 
                     }
 
@@ -96,8 +98,9 @@ public class unity implements AdsManage {
 
                     @Override
                     public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
-                        context.startActivity(MIntent);
+                        interstital.isShowed();
                         if (dialog.isShowing()){dialog.dismiss(); }
+                        isLoaded = false;
 
                     }
                 });
@@ -105,15 +108,60 @@ public class unity implements AdsManage {
 
             @Override
             public void onUnityAdsFailedToLoad(String s, UnityAds.UnityAdsLoadError unityAdsLoadError, String s1) {
-                context.startActivity(MIntent);
+               interstital.fieldToShow();
+
                 if (dialog.isShowing()){dialog.dismiss(); }
             }
         });
+        }else {
+            UnityAds.show((Activity) context, InterstitialUnit , new UnityAdsShowOptions(), new IUnityAdsShowListener() {
+                @Override
+                public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+                    if (dialog.isShowing()){ dialog.dismiss();}
+                    interstital.fieldToShow();
 
+                }
 
+                @Override
+                public void onUnityAdsShowStart(String placementId) {
 
+                }
 
+                @Override
+                public void onUnityAdsShowClick(String placementId) {
+
+                }
+
+                @Override
+                public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+                    interstital.isShowed();
+                    if (dialog.isShowing()){dialog.dismiss(); }
+                    isLoaded = false;
+
+                }
+            });
+        }
     }
+
+    @Override
+    public boolean loadInter(Context context) {
+        UnityAds.load(InterstitialUnit, new IUnityAdsLoadListener() {
+            @Override
+            public void onUnityAdsAdLoaded(String s) {
+             isLoaded = true;
+            }
+
+            @Override
+            public void onUnityAdsFailedToLoad(String s, UnityAds.UnityAdsLoadError unityAdsLoadError, String s1) {
+                isLoaded = false;
+            }
+        });
+        return isLoaded;
+    }
+
+
+
+
 
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {

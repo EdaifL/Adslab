@@ -37,13 +37,13 @@ public class FaceAds implements AdsManage {
     private String Interstitial_Unit="";
     private String Native_Unite = "";
     private String NativeBanner_Unite = "";
-    public static FaceAds getInstance(AdsUnites config) {
+    public static FaceAds getInstance(NetworkUnitAd unitAd) {
         if (facebook ==null){
             facebook = new FaceAds();
-            facebook.BannerUnit = config.getBanner_id();
-            facebook.Interstitial_Unit = config.getInterstitial_id();
-            facebook.Native_Unite = config.getNative_Id();
-            facebook.NativeBanner_Unite = config.getNativeBanner_id();
+            facebook.BannerUnit = unitAd.getBANNER_Id();
+            facebook.Interstitial_Unit = unitAd.getINTERSTITIAL_Id();
+            facebook.Native_Unite = unitAd.getNATIVE_Id();
+            facebook.NativeBanner_Unite = unitAd.getNATIVE_BANNER_Id();
         }
         return facebook;
     }
@@ -80,18 +80,126 @@ public class FaceAds implements AdsManage {
 
         FBadView.loadAd();
     }
-
-
-
+    private boolean Isloaded;
     @Override
-    public void Show_Interstitial(Context context,  Intent MIntent) {
+    public void Show_Interstitial(Context context, Interstital interstital) {
         initDialog(context);
-        interstitialAd = new InterstitialAd(context, Interstitial_Unit);
-        interstitialAd.buildLoadAdConfig().withAdListener(new FBInterstitialAdListener(context, MIntent));
-        interstitialAd.loadAd();
+        if (Isloaded){
+            interstitialAd.show();
+            interstitialAd.buildLoadAdConfig().withAdListener(new InterstitialAdListener() {
+                @Override
+                public void onInterstitialDisplayed(Ad ad) {
+
+                }
+
+                @Override
+                public void onInterstitialDismissed(Ad ad) {
+                    if (dialog.isShowing())dialog.dismiss();
+                    interstital.isShowed();
+                }
+
+                @Override
+                public void onError(Ad ad, AdError adError) {
+                    if (dialog.isShowing())dialog.dismiss();
+                    interstital.fieldToShow();
+                }
+
+                @Override
+                public void onAdLoaded(Ad ad) {
+
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+
+                }
+            });
+        }else {
+            loadInter(context);
+            InterstitialAd interstitialAd2 = new InterstitialAd(context, Interstitial_Unit);
+            interstitialAd2.buildLoadAdConfig().withAdListener(new InterstitialAdListener() {
+                @Override
+                public void onInterstitialDisplayed(Ad ad) {
+
+                }
+
+                @Override
+                public void onInterstitialDismissed(Ad ad) {
+                    if (dialog.isShowing()){ dialog.dismiss();}
+                    interstital.isShowed();
+                }
+
+                @Override
+                public void onError(Ad ad, AdError adError) {
+                    if (dialog.isShowing()){ dialog.dismiss();}
+                    interstital.fieldToShow();
+
+                }
+
+                @Override
+                public void onAdLoaded(Ad ad) {
+                  interstitialAd2.show();
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+
+                }
+            });
+            interstitialAd2.loadAd();
+        }
 
     }
 
+    @Override
+    public boolean loadInter(Context context) {
+        interstitialAd = new InterstitialAd(context, Interstitial_Unit);
+        interstitialAd.buildLoadAdConfig().withAdListener(new InterstitialAdListener() {
+            @Override
+            public void onInterstitialDisplayed(Ad ad) {
+
+            }
+
+            @Override
+            public void onInterstitialDismissed(Ad ad) {
+
+            }
+
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Isloaded = false;
+
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Isloaded = true;
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+
+            }
+        });
+
+        interstitialAd.loadAd();
+        return Isloaded;
+    }
 
 
 

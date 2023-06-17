@@ -24,74 +24,52 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 
 public class AdsUnites {
-    private static String TAG_NETWORK ;
-    private static String TAG_BANNER ;
-    private static String TAG_NATIVE_BANNER ;
-    private static String TAG_NATIVE ;
-    private static String TAG_INTERSTITIAL ;
-    private static String TAG_APP_ID ;
-    private static String TAG_OPEN_APP_ID;
 
-
-    public AdsUnites(String TAG_NETWORK,String TAG_OPEN_APP_ID, String TAG_BANNER, String TAG_NATIVE_BANNER, String TAG_NATIVE, String TAG_INTERSTITIAL, String TAG_APP_ID) {
-        this.TAG_NETWORK = TAG_NETWORK;
-        this.TAG_BANNER = TAG_BANNER;
-        this.TAG_NATIVE_BANNER = TAG_NATIVE_BANNER;
-        this.TAG_NATIVE = TAG_NATIVE;
-        this.TAG_INTERSTITIAL = TAG_INTERSTITIAL;
-        this.TAG_APP_ID = TAG_APP_ID;
-        this.TAG_OPEN_APP_ID = TAG_OPEN_APP_ID;
-
-
-    }
-
-
-    public String getAdNetwork() {
-       return TAG_NETWORK;
-    }
-    public String getTagOpenAppId() {
-        return TAG_OPEN_APP_ID;
-    }
-    public String getBanner_id() {
-       return TAG_BANNER;
-    }
-    public String getNativeBanner_id() {
-       return TAG_NATIVE_BANNER;
-    }
-    public String getInterstitial_id() {
-        return TAG_INTERSTITIAL;
-    }
-    public String getNative_Id() {
-       return TAG_NATIVE;
-    }
-    public String getAppId(){
-        return TAG_APP_ID;
-    }
+    private  static NetworkUnitAd Admob;
+    private static   NetworkUnitAd Unity;
+    private static   NetworkUnitAd Facebook;
+    private static   NetworkUnitAd Applovin;
+    private static   NetworkUnitAd Pangle;
+    private static NetworkUnitAd Yandex;
+    private static JSONObject facebook,admob,yandex,applovin,pangle,unity;
+    public static String OneSignalKey;
 
     public AdsUnites() {
     }
 
-    public AdsUnites(Context Mycontext, String url) {
+    public AdsUnites(Context Mycontext, String url,JsonListener listener) {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 //////////////////////////
+                OneSignalKey = response.optString("OneSignalKey");
+                 facebook = response.optJSONObject("Facebook");
+                 admob = response.optJSONObject("Admob");
+                 yandex = response.optJSONObject("Yandex");
+                 applovin = response.optJSONObject("Applovin");
+                 pangle = response.optJSONObject("Pangle");
+                 unity = response.optJSONObject("Unity");
+                if (admob != null){
+                    Admob = getAdUnite(admob);}
+                if (facebook != null)
+                    Facebook = getAdUnite(facebook);
+                if (yandex != null){
+                    Yandex = getAdUnite(yandex);}
+                if (applovin != null){
+                    Applovin = getAdUnite(applovin);}
+                if (pangle != null){
+                    Pangle = getAdUnite(pangle);}
+                if (unity != null){
+                    Unity = getAdUnite(unity);}
 
-                JSONObject ads = response.optJSONObject("Ads_Config");
-                TAG_NETWORK  = ads.optString("Network");
-                TAG_BANNER =  ads.optString("BannerId");
-                TAG_INTERSTITIAL = ads.optString("InterId");
-                TAG_NATIVE = ads.optString("NativeId");
-                TAG_NATIVE_BANNER = ads.optString("NativeBannerId");
-                TAG_APP_ID = ads.optString("AppId");
-                TAG_OPEN_APP_ID = ads.optString("OpenAppId");
                 try {
                     Ads.ads = Switch();
                     Ads.ads.init(Mycontext);
                 }catch (IllegalArgumentException exception){
                     Ads.ads = Null.getInstance();
-                    Toast.makeText(Mycontext, exception.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Mycontext, exception.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+                listener.isloaded();
 
 
             }
@@ -113,53 +91,46 @@ public class AdsUnites {
                     message = "Connection TimeOut! Please check your internet connection.";
                 }
                 Log.d("message", "onErrorResponse: "+message);
-
-                new AlertDialog.Builder(Mycontext)
-                        .setTitle("Error")
-                        .setMessage(message)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = Mycontext.getPackageManager().
-                                        getLaunchIntentForPackage(Mycontext.getPackageName());
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                Mycontext.startActivity(i);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Activity activity = (Activity) Mycontext;
-                                activity.finishAffinity();
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert).setCancelable(false)
-                        .show();
+                listener.fieldtoLoad(message);
             }
         });
         Volley.newRequestQueue(Mycontext).add(request);}
 
-
     /////////////////////////////////////////////////////////
  public static AdsManage Switch(){
-       AdsUnites config = new AdsUnites();
-        if (config.getAdNetwork().toLowerCase().equals("yandex")){
-            return YandexClass.getInstance(config);
-        } else if (config.getAdNetwork().toLowerCase().equals("facebook")){
-            return FaceAds.getInstance(config);
-        }else if (config.getAdNetwork().toLowerCase().equals("admob")){
-            return Adsadmob.getInstance(config);
-        }else if (config.getAdNetwork().toLowerCase().equals("unity")){
-            return unity.getInstance(config);
-        }else if (config.getAdNetwork().toLowerCase().equals("pangle")){
-            return PangleAd.getInstance(config);
-        }else if (config.getAdNetwork().toLowerCase().equals("applovin")) {
-            return ApplovinAd.getInstance(config);
-        }else if (config.getAdNetwork().isEmpty()) {
-            return Null.getInstance();
+        if (yandex != null &&Yandex.isOn()){
+            return YandexClass.getInstance(Yandex);
+        } else if (facebook != null &&Facebook.isOn()){
+            return FaceAds.getInstance(Facebook);
+        }else if (admob != null && Admob.isOn()){
+            return Adsadmob.getInstance(Admob);
+        }else if (unity != null && Unity.isOn()){
+            return UnityAd.getInstance(Unity);
+        }else if (pangle != null && Pangle.isOn()){
+            return PangleAd.getInstance(Pangle);
+        }else if (applovin != null && Applovin.isOn()) {
+            return ApplovinAd.getInstance(Applovin);
         } else{
-            throw  new IllegalArgumentException("Not Valid Ads  Network");
+             throw new IllegalArgumentException("No networks Added");
+
         }
+    }
+    private NetworkUnitAd getAdUnite(JSONObject json){
+        NetworkUnitAd unitAd = new NetworkUnitAd();
+        unitAd.setOn(json.optBoolean("isOn"));
+        unitAd.setAPP_ID(json.optString("AppId"));
+        unitAd.setOPEN_APP_ID(json.optString("OpenApp"));
+        unitAd.setBANNER_Id(json.optString("bannerId"));
+        unitAd.setINTERSTITIAL_Id(json.optString("InterId"));
+        unitAd.setNATIVE_Id(json.optString("NativeId"));
+        unitAd.setNATIVE_BANNER_Id(json.optString("NativeBannerId"));
+        return unitAd;
+
+
+    }
+    public interface JsonListener{
+        void isloaded();
+        void fieldtoLoad(String error);
     }
 
 }

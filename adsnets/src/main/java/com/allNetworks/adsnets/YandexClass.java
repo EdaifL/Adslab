@@ -13,6 +13,10 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdListener;
+import com.applovin.mediation.MaxError;
+import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.yandex.mobile.ads.banner.AdSize;
 import com.yandex.mobile.ads.banner.BannerAdView;
 import com.yandex.mobile.ads.common.AdRequest;
@@ -30,32 +34,23 @@ import com.yandex.mobile.ads.nativeads.template.NativeBannerView;
 
 public class YandexClass implements AdsManage {
     private static YandexClass yandexAds;
-    private final int Requests = 0;
-    private  float Percentage;
     private ProgressDialog dialog;
     private String BannerUnit ="";
     private String Interstitial_Unit="";
     private String Native_Unite = "";
-    private String NativeBanner_Unite = "";
     private static final String YANDEX_MOBILE_ADS_TAG = "YandexMobileAds";
-    public static YandexClass getInstance(AdsUnites config){
+    public static YandexClass getInstance(NetworkUnitAd unitAd){
         if (yandexAds == null){
             yandexAds = new YandexClass();
-            yandexAds.BannerUnit = config.getBanner_id();
-            yandexAds.Interstitial_Unit= config.getInterstitial_id();
-            yandexAds.Native_Unite = config.getNative_Id();
-            yandexAds.NativeBanner_Unite = config.getNativeBanner_id();
+            yandexAds.BannerUnit = unitAd.getBANNER_Id();
+            yandexAds.Interstitial_Unit= unitAd.getINTERSTITIAL_Id();
+            yandexAds.Native_Unite = unitAd.getNATIVE_Id();
         }
         return yandexAds;
     }
     @Override
     public void init(Context context) {
-        MobileAds.initialize(context, new InitializationListener() {
-            @Override
-            public void onInitializationCompleted() {
-                Log.d(YANDEX_MOBILE_ADS_TAG, "SDK initialized");
-            }
-        });
+        MobileAds.initialize(context,()->{});
     }
 
 
@@ -81,23 +76,72 @@ public class YandexClass implements AdsManage {
         mBannerAdView.loadAd(adRequest);
         linearLayout.addView(mBannerAdView);
     }
-    private InterstitialAd interstitialAd;
+    private boolean isLoaded = false;
+
     @Override
-    public void Show_Interstitial(Context context,  Intent MIntent) {
+    public void Show_Interstitial(Context context, Interstital interstital) {
         initDialog(context);
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(Interstitial_Unit);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
-        interstitialAd.setInterstitialAdEventListener(new InterstitialAdEventListener() {
+        if (isLoaded){
+            interstitialAd.show();
+            interstitialAd.setInterstitialAdEventListener(new InterstitialAdEventListener() {
+                @Override
+                public void onAdLoaded() {
+
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
+                    interstital.fieldToShow();
+                }
+
+                @Override
+                public void onAdShown() {
+
+                }
+
+                @Override
+                public void onAdDismissed() {
+                    if (dialog.isShowing()){dialog.dismiss();}
+                    interstital.isShowed();
+                    isLoaded = false;
+                }
+
+                @Override
+                public void onAdClicked() {
+
+                }
+
+                @Override
+                public void onLeftApplication() {
+
+                }
+
+                @Override
+                public void onReturnedToApplication() {
+
+                }
+
+                @Override
+                public void onImpression(@Nullable ImpressionData impressionData) {
+
+                }
+            });
+        }else {
+        loadInter(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd interstitialAd2 = new InterstitialAd(context);
+        interstitialAd2.setAdUnitId(Interstitial_Unit);
+
+        interstitialAd2.loadAd(adRequest);
+        interstitialAd2.setInterstitialAdEventListener(new InterstitialAdEventListener() {
             @Override
             public void onAdLoaded() {
-                interstitialAd.show();
+                interstitialAd2.show();
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
-                interstitialAd.loadAd(adRequest);
+                interstital.fieldToShow();
             }
 
             @Override
@@ -107,9 +151,9 @@ public class YandexClass implements AdsManage {
 
             @Override
             public void onAdDismissed() {
-                if ( dialog !=null && dialog.isShowing()) {
-                    dialog.dismiss(); }
-                context.startActivity(MIntent);
+                if (dialog.isShowing()){dialog.dismiss();}
+                interstital.isShowed();
+              isLoaded = false;
             }
 
             @Override
@@ -132,7 +176,62 @@ public class YandexClass implements AdsManage {
 
             }
         });
+        }
     }
+    private InterstitialAd interstitialAd;
+    @Override
+    public boolean loadInter(Context context) {
+        AdRequest adRequest = new AdRequest.Builder().build();
+         interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId(Interstitial_Unit);
+
+        interstitialAd.loadAd(adRequest);
+        interstitialAd.setInterstitialAdEventListener(new InterstitialAdEventListener() {
+            @Override
+            public void onAdLoaded() {
+                isLoaded = true;
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
+                isLoaded  =false;
+            }
+
+            @Override
+            public void onAdShown() {
+
+            }
+
+            @Override
+            public void onAdDismissed() {
+
+            }
+
+            @Override
+            public void onAdClicked() {
+
+            }
+
+            @Override
+            public void onLeftApplication() {
+
+            }
+
+            @Override
+            public void onReturnedToApplication() {
+
+            }
+
+            @Override
+            public void onImpression(@Nullable ImpressionData impressionData) {
+
+            }
+        });
+        return isLoaded;
+    }
+
+
+
 
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {

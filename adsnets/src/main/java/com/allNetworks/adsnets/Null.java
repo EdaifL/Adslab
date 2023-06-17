@@ -36,9 +36,16 @@ public class Null implements AdsManage{
     }
 
     @Override
-    public void Show_Interstitial(Context context, Intent MIntent) {
-        context.startActivity(MIntent);
+    public void Show_Interstitial(Context context, Interstital interstital) {
+
     }
+
+    @Override
+    public boolean loadInter(Context context) {
+        return false;
+    }
+
+
 
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {

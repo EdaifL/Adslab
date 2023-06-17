@@ -47,18 +47,19 @@ public class PangleAd implements AdsManage {
     private static PangleAd pangleAd;
     ProgressDialog dialog;
     static boolean openappShow = false;
+    private PAGInterstitialAd interstitialAd;
     private String AppId;
     private String OpenAppId;
     private String BannerUnit ;
     private String InterstitialUnit ;
     private String NativeUnit ;
-   public static PangleAd getInstance(AdsUnites config){
+   public static PangleAd getInstance(NetworkUnitAd unitAd){
        if (pangleAd== null){
            pangleAd  = new PangleAd();
-           pangleAd.AppId = config.getAppId();
-           pangleAd.BannerUnit = config.getBanner_id();
-           pangleAd.InterstitialUnit = config.getInterstitial_id();
-           pangleAd.NativeUnit = config.getNative_Id();
+           pangleAd.AppId = unitAd.getAPP_ID();
+           pangleAd.BannerUnit = unitAd.getBANNER_Id();
+           pangleAd.InterstitialUnit = unitAd.getINTERSTITIAL_Id();
+           pangleAd.NativeUnit = unitAd.getNATIVE_Id();
        }
        return pangleAd;
    }
@@ -158,7 +159,7 @@ public class PangleAd implements AdsManage {
         if (!openappShow){
             initDialog(context);
             PAGAppOpenRequest request = new PAGAppOpenRequest();
-            request.setTimeout(3000);
+            request.setTimeout(2000);
             PAGAppOpenAd.loadAd(OpenAppId, request, new PAGAppOpenAdLoadListener() {
                 @Override
                 public void onError(int code, String message) {
@@ -209,27 +210,50 @@ public class PangleAd implements AdsManage {
                     }
                 });
     }
-
+    private boolean isLoaded;
     @Override
-    public void Show_Interstitial(Context context, Intent MIntent) {
+    public void Show_Interstitial(Context context, Interstital interstital) {
         initDialog(context);
-        PAGInterstitialRequest request = new PAGInterstitialRequest();
-        PAGInterstitialAd.loadAd(InterstitialUnit,
-                request,
-                new PAGInterstitialAdLoadListener() {
-                    @Override
-                    public void onError(int code, String message) {
-                        Log.e("LOG",message);
-                        if (dialog.isShowing()){ dialog.dismiss();}
-                        context.startActivity(MIntent);
-                    }
+        if (isLoaded){
+            interstitialAd.show((Activity) context);
+        interstitialAd.setAdInteractionListener(new PAGInterstitialAdInteractionListener() {
+            @Override
+            public void onAdShowed() {
+                Log.e("PangleTAG","AdsShowed");
+            }
 
-                    @Override
-                    public void onAdLoaded(PAGInterstitialAd interstitialAd) {
-                        if (interstitialAd != null) {
+            @Override
+            public void onAdClicked() {
+
+            }
+
+            @Override
+            public void onAdDismissed() {
+                if (dialog.isShowing()){dialog.dismiss();}
+                interstital.isShowed();
+
+
+            }
+        });
+        }else {
+            loadInter(context);
+            PAGInterstitialRequest request = new PAGInterstitialRequest();
+            PAGInterstitialAd.loadAd(InterstitialUnit,
+                    request,
+                    new PAGInterstitialAdLoadListener() {
+                        @Override
+                        public void onError(int code, String message) {
+                            if (dialog.isShowing()){dialog.dismiss();}
+                            interstital.fieldToShow();
+                        }
+
+                        @Override
+                        public void onAdLoaded(PAGInterstitialAd interstitialAd) {
+                           interstitialAd.show((Activity) context);
                             interstitialAd.setAdInteractionListener(new PAGInterstitialAdInteractionListener() {
                                 @Override
                                 public void onAdShowed() {
+                                    if (dialog.isShowing()){dialog.dismiss();}
                                     Log.e("PangleTAG","AdsShowed");
                                 }
 
@@ -240,19 +264,41 @@ public class PangleAd implements AdsManage {
 
                                 @Override
                                 public void onAdDismissed() {
-                                    Log.e("PangleTAG","Ads Dismissed");
-                                    if (dialog.isShowing()){ dialog.dismiss();}
-                                    context.startActivity(MIntent);
+
+                                    interstital.isShowed();
+
 
                                 }
                             });
-                            interstitialAd.show((Activity) context);
-
                         }
+
+                    });
+        }
+
+    }
+
+    @Override
+    public boolean loadInter(Context context) {
+        PAGInterstitialRequest request = new PAGInterstitialRequest();
+        interstitialAd.loadAd(InterstitialUnit,
+                request,
+                new PAGInterstitialAdLoadListener() {
+                    @Override
+                    public void onError(int code, String message) {
+                        isLoaded  = false;
+                    }
+
+                    @Override
+                    public void onAdLoaded(PAGInterstitialAd interstitialAd) {
+                        if (interstitialAd != null) {
+                            PangleAd.this.interstitialAd =interstitialAd;
+                        }
+                        isLoaded = true;
                     }
 
                 });
 
+        return isLoaded;
     }
 
     @Override
