@@ -25,11 +25,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
-        <meta-data android:name="applovin.sdk.key"
-            android:value="SCsH21bcWmibJe6DcT4NPkKt0ZtReDcrSdkfTERbfUX54swokATD9rJkw1mXG2UQIPlVqITehqZpvn7wahtz6L"/>
     </application>
 
 </manifest>
