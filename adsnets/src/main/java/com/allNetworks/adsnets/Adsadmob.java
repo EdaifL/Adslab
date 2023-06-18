@@ -2,9 +2,8 @@ package com.allNetworks.adsnets;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -40,19 +39,15 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 
 
 public class Adsadmob implements AdsManage{
-    //region asabat
     private static Adsadmob admob;
     private InterstitialAd mInterstitialAd;
-    private ProgressDialog dialog;
-    private String BannerUnit ;
-    private String InterstitialUnit ;
-    private String NativeUnit ;
+    private Dialog dialog;
+    private String BannerUnit ,InterstitialUnit ,NativeUnit;
     private NativeAd nativeAd;
     private AdRequest adRequest ;
     private String appId;
-    private  int Requests = 0;
-    private  float Percentage;
-    //endregion
+    private static   int Requests = 0;
+
     Activity activity;
     public static Adsadmob getInstance(NetworkUnitAd unitAd){
         if (admob ==null){
@@ -89,18 +84,7 @@ public class Adsadmob implements AdsManage{
         });
         adRequest = new AdRequest.Builder().build();
     }
-    @Override
-    public void initDialog(Context context) {
-        dialog = new ProgressDialog(context, ProgressDialog.THEME_HOLO_LIGHT);
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.setProgressNumberFormat(null);
-        dialog.setProgressPercentFormat(null);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Page Loading...");
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
+
 
     @Override
     public void Show_OpenApp(Context context) {
@@ -120,64 +104,71 @@ public class Adsadmob implements AdsManage{
     private boolean isloaded = false;
     @Override
     public void Show_Interstitial(Context context, Interstital interstital) {
-
-        initDialog(context);
-        if (isloaded) {
-            mInterstitialAd.show((Activity) context);
-            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                @Override
-                public void onAdFailedToShowFullScreenContent(AdError adError) {
-                }
-
-                @Override
-                public void onAdShowedFullScreenContent() {
-                }
-
-                @Override
-                public void onAdDismissedFullScreenContent() {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
+        if (Requests+1 == AdsUnites.interCounterShow) {
+            dialog = new progessDialog(context);
+            dialog.show();
+            if (isloaded) {
+                mInterstitialAd.show((Activity) context);
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(AdError adError) {
                     }
-                    isloaded = false;
-                    interstital.isShowed();
 
-                }
-            });
-        }else {
-            loadInter(context);
-            InterstitialAd.load(context,InterstitialUnit,adRequest, new InterstitialAdLoadCallback(){
-                @Override
-                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                    }
 
-                    interstitialAd.show((Activity) context);
-                    interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                        @Override
-                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
                         }
+                        isloaded = false;
+                        interstital.isShowed();
+                        Requests =0;
+                    }
+                });
+            } else {
+                loadInter(context);
+                InterstitialAd.load(context, InterstitialUnit, adRequest, new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
 
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                        }
-
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            if (dialog.isShowing()) {
-                                dialog.dismiss();
+                        interstitialAd.show((Activity) context);
+                        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
                             }
 
-                            interstital.isShowed();
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                            }
 
-                        }
-                    });
-                }
-                @SuppressLint("SuspiciousIndentation")
-                @Override
-                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    interstital.fieldToShow();
-                }
-            });
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                if (dialog.isShowing()) {
+                                    dialog.dismiss();
+                                }
+                                isloaded =false;
+                                interstital.isShowed();
+                                Requests =0;
+
+                            }
+                        });
+                    }
+
+                    @SuppressLint("SuspiciousIndentation")
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        interstital.fieldToShow();
+                    }
+                });
+            }
         }
-
+        else {
+            Requests +=1;
+            interstital.isShowed();
+        }
     }
 
     @Override

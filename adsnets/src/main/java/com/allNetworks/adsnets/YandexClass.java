@@ -1,10 +1,8 @@
 package com.allNetworks.adsnets;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,16 +11,11 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.yandex.mobile.ads.banner.AdSize;
 import com.yandex.mobile.ads.banner.BannerAdView;
 import com.yandex.mobile.ads.common.AdRequest;
 import com.yandex.mobile.ads.common.AdRequestError;
 import com.yandex.mobile.ads.common.ImpressionData;
-import com.yandex.mobile.ads.common.InitializationListener;
 import com.yandex.mobile.ads.common.MobileAds;
 import com.yandex.mobile.ads.interstitial.InterstitialAd;
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
@@ -34,9 +27,10 @@ import com.yandex.mobile.ads.nativeads.template.NativeBannerView;
 
 public class YandexClass implements AdsManage {
     private static YandexClass yandexAds;
-    private ProgressDialog dialog;
+    private Dialog dialog;
     private String BannerUnit ="";
     private String Interstitial_Unit="";
+    private static   int Requests = 0;
     private String Native_Unite = "";
     private static final String YANDEX_MOBILE_ADS_TAG = "YandexMobileAds";
     public static YandexClass getInstance(NetworkUnitAd unitAd){
@@ -54,18 +48,7 @@ public class YandexClass implements AdsManage {
     }
 
 
-    @Override
-    public void initDialog(Context context) {
-        dialog = new ProgressDialog(context, ProgressDialog.THEME_HOLO_LIGHT);
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.setProgressNumberFormat(null);
-        dialog.setProgressPercentFormat(null);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Page Loading...");
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
+
 
     @Override
     public void Show_Banner(Activity activity, LinearLayout linearLayout) {
@@ -80,7 +63,9 @@ public class YandexClass implements AdsManage {
 
     @Override
     public void Show_Interstitial(Context context, Interstital interstital) {
-        initDialog(context);
+        if(Requests +1 == AdsUnites.interCounterShow){
+        dialog = new progessDialog(context);
+        dialog.show();
         if (isLoaded){
             interstitialAd.show();
             interstitialAd.setInterstitialAdEventListener(new InterstitialAdEventListener() {
@@ -104,6 +89,7 @@ public class YandexClass implements AdsManage {
                     if (dialog.isShowing()){dialog.dismiss();}
                     interstital.isShowed();
                     isLoaded = false;
+                    Requests =0;
                 }
 
                 @Override
@@ -154,6 +140,7 @@ public class YandexClass implements AdsManage {
                 if (dialog.isShowing()){dialog.dismiss();}
                 interstital.isShowed();
               isLoaded = false;
+                Requests =0;
             }
 
             @Override
@@ -176,6 +163,10 @@ public class YandexClass implements AdsManage {
 
             }
         });
+        }
+        }else {
+            Requests +=1;
+            interstital.isShowed();
         }
     }
     private InterstitialAd interstitialAd;

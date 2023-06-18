@@ -2,7 +2,6 @@ package com.allNetworks.adsnets;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -20,10 +19,6 @@ public class Null implements AdsManage{
 
     }
 
-    @Override
-    public void initDialog(Context context) {
-
-    }
 
     @Override
     public void Show_OpenApp(Context context) {
@@ -37,7 +32,7 @@ public class Null implements AdsManage{
 
     @Override
     public void Show_Interstitial(Context context, Interstital interstital) {
-
+            interstital.isShowed();
     }
 
     @Override

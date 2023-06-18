@@ -3,9 +3,8 @@ package com.allNetworks.adsnets;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,14 +28,15 @@ public class FaceAds implements AdsManage {
 
     private static FaceAds facebook;
     private InterstitialAd interstitialAd;
-    private ProgressDialog dialog;
+    private Dialog dialog;
     private NativeBannerAd nativeBannerAd;
     private NativeAd nativeAd;
     private AdView FBadView;
-    private String BannerUnit ="";
-    private String Interstitial_Unit="";
+    private String BannerUnit ;
+    private String Interstitial_Unit;
     private String Native_Unite = "";
     private String NativeBanner_Unite = "";
+    private static   int Requests = 0;
     public static FaceAds getInstance(NetworkUnitAd unitAd) {
         if (facebook ==null){
             facebook = new FaceAds();
@@ -54,18 +54,7 @@ public class FaceAds implements AdsManage {
 
     }
 
-    @Override
-    public void initDialog(Context context) {
-        dialog = new ProgressDialog(context, ProgressDialog.THEME_HOLO_LIGHT);
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.setProgressNumberFormat(null);
-        dialog.setProgressPercentFormat(null);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Page Loading...");
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
+
 
     @Override
     public void Show_OpenApp(Context context) {
@@ -83,7 +72,9 @@ public class FaceAds implements AdsManage {
     private boolean Isloaded;
     @Override
     public void Show_Interstitial(Context context, Interstital interstital) {
-        initDialog(context);
+       if (Requests +1 == AdsUnites.interCounterShow){
+        dialog = new progessDialog(context);
+        dialog.show();
         if (Isloaded){
             interstitialAd.show();
             interstitialAd.buildLoadAdConfig().withAdListener(new InterstitialAdListener() {
@@ -96,6 +87,8 @@ public class FaceAds implements AdsManage {
                 public void onInterstitialDismissed(Ad ad) {
                     if (dialog.isShowing())dialog.dismiss();
                     interstital.isShowed();
+                    Isloaded =false;
+                    Requests =0;
                 }
 
                 @Override
@@ -132,6 +125,8 @@ public class FaceAds implements AdsManage {
                 public void onInterstitialDismissed(Ad ad) {
                     if (dialog.isShowing()){ dialog.dismiss();}
                     interstital.isShowed();
+                    Isloaded = false;
+                    Requests =0;
                 }
 
                 @Override
@@ -158,6 +153,10 @@ public class FaceAds implements AdsManage {
             });
             interstitialAd2.loadAd();
         }
+       }else {
+           Requests +=1;
+           interstital.isShowed();
+       }
 
     }
 
@@ -201,55 +200,6 @@ public class FaceAds implements AdsManage {
         return Isloaded;
     }
 
-
-
-    private class FBInterstitialAdListener implements InterstitialAdListener {
-
-        Context mContext;
-
-        Intent mIntent;
-
-        private FBInterstitialAdListener(Context nActivity, Intent nIntent) {
-            mContext = nActivity;
-
-            mIntent = nIntent;
-        }
-
-        @Override
-        public void onAdClicked(Ad ad) {
-        }
-
-        @Override
-        public void onInterstitialDisplayed(Ad ad) {
-        }
-
-        @Override
-        public void onLoggingImpression(Ad ad) {
-        }
-
-        @Override
-        public void onInterstitialDismissed(Ad ad) {
-
-            if ( dialog !=null && dialog.isShowing()) {
-                dialog.dismiss(); }
-            mContext.startActivity(mIntent);
-        }
-        @Override
-        public void onError(Ad ad, AdError adError) {
-
-            if ( dialog !=null && dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-           mContext.startActivity(mIntent);
-        }
-
-        @Override
-        public void onAdLoaded(Ad ad) {
-            if (interstitialAd.isAdLoaded())
-                interstitialAd.show();
-        }
-    }
 
     @Override
     public void Show_Native(final Context context, final LinearLayout linearLayout , final ImageView imageView) {

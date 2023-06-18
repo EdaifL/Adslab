@@ -1,7 +1,7 @@
 package com.allNetworks.adsnets;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -18,10 +18,11 @@ import com.unity3d.services.banners.UnityBannerSize;
 public class UnityAd implements AdsManage {
     String AppId;
     private static UnityAd unity;
-    private ProgressDialog dialog;
+    private Dialog dialog;
     private String BannerUnit;
     private String InterstitialUnit;
     private String NativeUnit;
+    private static   int Requests = 0;
     private final Boolean TestMode = false;
 
 
@@ -42,18 +43,7 @@ public class UnityAd implements AdsManage {
         UnityAds.initialize(context, AppId, TestMode);
     }
 
-    @Override
-    public void initDialog(Context context) {
-        dialog = new ProgressDialog(context, ProgressDialog.THEME_HOLO_LIGHT);
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.setProgressNumberFormat(null);
-        dialog.setProgressPercentFormat(null);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Page Loading...");
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
+
 
     @Override
     public void Show_OpenApp(Context context) {
@@ -72,7 +62,9 @@ public class UnityAd implements AdsManage {
     private boolean isLoaded;
     @Override
     public void Show_Interstitial(Context context, Interstital interstital) {
-              initDialog(context);
+       if (Requests +1 ==AdsUnites.interCounterShow){
+        dialog = new progessDialog(context);
+        dialog.show();
         if (!isLoaded){
         loadInter(context);
         UnityAds.load(InterstitialUnit, new IUnityAdsLoadListener() {
@@ -101,6 +93,7 @@ public class UnityAd implements AdsManage {
                         interstital.isShowed();
                         if (dialog.isShowing()){dialog.dismiss(); }
                         isLoaded = false;
+                        Requests =0;
 
                     }
                 });
@@ -137,10 +130,15 @@ public class UnityAd implements AdsManage {
                     interstital.isShowed();
                     if (dialog.isShowing()){dialog.dismiss(); }
                     isLoaded = false;
+                    Requests =0;
 
                 }
             });
         }
+       }else {
+           Requests +=1;
+           interstital.isShowed();
+       }
     }
 
     @Override

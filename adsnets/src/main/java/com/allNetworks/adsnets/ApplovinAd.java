@@ -1,7 +1,7 @@
 package com.allNetworks.adsnets;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -31,7 +31,7 @@ public class ApplovinAd implements AdsManage {
     private static boolean IsOpenshowed = false;
     private MaxAdView adView;
     private MaxInterstitialAd interstitialAd;
-    ProgressDialog dialog;
+    private Dialog dialog;
     private String LogTag = "Applovin";
     private MaxNativeAdLoader nativeAdLoader;
     private MaxAd nativeAd;
@@ -40,6 +40,7 @@ public class ApplovinAd implements AdsManage {
     private String Interstitial_Unit;
     private String Native_Unite;
     private String TAG = "Applovin";
+    private static int Requests = 0;
     public static ApplovinAd applovinAd;
     public static ApplovinAd getInstance(NetworkUnitAd unitAd){
         if (applovinAd == null){
@@ -60,23 +61,13 @@ public class ApplovinAd implements AdsManage {
         AppLovinSdk.initializeSdk( context);
     }
 
-    @Override
-    public void initDialog(Context context) {
-        dialog = new ProgressDialog(context, ProgressDialog.THEME_HOLO_LIGHT);
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.setProgressNumberFormat(null);
-        dialog.setProgressPercentFormat(null);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Page Loading...");
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
+
 
     @Override
     public void Show_OpenApp(Context context) {
         if (!IsOpenshowed && !OpenAppId.isEmpty()){
-            initDialog(context);
+            dialog = new progessDialog(context);
+            dialog.show();
             appOpenAd = new MaxAppOpenAd( OpenAppId, context);
             appOpenAd.setListener(new MaxAdListener() {
                 @Override
@@ -181,100 +172,116 @@ public class ApplovinAd implements AdsManage {
     private int retryAttempt;
     @Override
     public void Show_Interstitial(Context context, Interstital interstital) {
-        initDialog(context);
-        if (isLoaded){
-            interstitialAd.setListener(new MaxAdListener() {
-                @Override
-                public void onAdLoaded(MaxAd ad) {
-                    retryAttempt = 0;
-                    interstitialAd.showAd(Interstitial_Unit);
+        if (Requests +1 ==AdsUnites.interCounterShow) {
+            dialog = new progessDialog(context);
+            dialog.show();
+            if (isLoaded) {
+                interstitialAd.setListener(new MaxAdListener() {
+                    @Override
+                    public void onAdLoaded(MaxAd ad) {
+                        retryAttempt = 0;
+                        interstitialAd.showAd(Interstitial_Unit);
 
-                }
+                    }
 
-                @Override
-                public void onAdDisplayed(MaxAd ad) {
+                    @Override
+                    public void onAdDisplayed(MaxAd ad) {
 
-                }
+                    }
 
-                @Override
-                public void onAdHidden(MaxAd ad) {
-                    if (dialog.isShowing()){dialog.dismiss();}
-                    interstital.isShowed();
-
-                }
-
-                @Override
-                public void onAdClicked(MaxAd ad) {
-
-                }
-
-                @Override
-                public void onAdLoadFailed(String adUnitId, MaxError error) {
-
-                }
-
-                @Override
-                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-                    if (dialog.isShowing()){dialog.dismiss();}
-                    interstital.fieldToShow();
-                }
-            });
-            interstitialAd.loadAd();}
-        else {
-            loadInter(context);
-           MaxInterstitialAd interstitialAd2 =new MaxInterstitialAd(Interstitial_Unit, (Activity) context);
-            interstitialAd2.setListener(new MaxAdListener() {
-                @Override
-                public void onAdLoaded(MaxAd ad) {
-                    retryAttempt = 0;
-                    interstitialAd2.showAd();
-                }
-
-                @Override
-                public void onAdDisplayed(MaxAd ad) {
-
-                }
-
-                @Override
-                public void onAdHidden(MaxAd ad) {
-                    if (dialog.isShowing()){dialog.dismiss();}
-                    interstital.isShowed();
-
-
-                }
-
-                @Override
-                public void onAdClicked(MaxAd ad) {
-
-                }
-
-                @Override
-                public void onAdLoadFailed(String adUnitId, MaxError error) {
-                    retryAttempt++;
-                    long delayMillis = TimeUnit.SECONDS.toMillis( (long) Math.pow( 2, Math.min( 6, retryAttempt ) ) );
-
-                    new Handler().postDelayed(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            interstitialAd2.loadAd();
+                    @Override
+                    public void onAdHidden(MaxAd ad) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
                         }
-                    }, delayMillis );
-                    if (dialog.isShowing()){dialog.dismiss();}
+                        interstital.isShowed();
 
-                    interstital.fieldToShow();
-                }
+                    }
 
-                @Override
-                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-                    if (dialog.isShowing()){dialog.dismiss();}
+                    @Override
+                    public void onAdClicked(MaxAd ad) {
 
-                    interstital.fieldToShow();
-                }
-            });
-            interstitialAd2.loadAd();}
+                    }
 
+                    @Override
+                    public void onAdLoadFailed(String adUnitId, MaxError error) {
+
+                    }
+
+                    @Override
+                    public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        interstital.fieldToShow();
+                    }
+                });
+                interstitialAd.loadAd();
+            } else {
+                loadInter(context);
+                MaxInterstitialAd interstitialAd2 = new MaxInterstitialAd(Interstitial_Unit, (Activity) context);
+                interstitialAd2.setListener(new MaxAdListener() {
+                    @Override
+                    public void onAdLoaded(MaxAd ad) {
+                        retryAttempt = 0;
+                        interstitialAd2.showAd();
+                    }
+
+                    @Override
+                    public void onAdDisplayed(MaxAd ad) {
+
+                    }
+
+                    @Override
+                    public void onAdHidden(MaxAd ad) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        interstital.isShowed();
+                        Requests =0;
+                        isLoaded = false;
+
+
+                    }
+
+                    @Override
+                    public void onAdClicked(MaxAd ad) {
+
+                    }
+
+                    @Override
+                    public void onAdLoadFailed(String adUnitId, MaxError error) {
+                        retryAttempt++;
+                        long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, retryAttempt)));
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                interstitialAd2.loadAd();
+                            }
+                        }, delayMillis);
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+
+                        interstital.fieldToShow();
+                    }
+
+                    @Override
+                    public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+
+                        interstital.fieldToShow();
+                    }
+                });
+                interstitialAd2.loadAd();
+            }
+        }else {
+            Requests +=1;
+            interstital.isShowed();
+        }
 
     }
     private boolean isLoaded;

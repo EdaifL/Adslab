@@ -1,13 +1,7 @@
 package com.allNetworks.adsnets;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AlertDialog;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -29,9 +23,9 @@ public class AdsUnites {
     private static   NetworkUnitAd Unity;
     private static   NetworkUnitAd Facebook;
     private static   NetworkUnitAd Applovin;
-    private static   NetworkUnitAd Pangle;
+    public static int interCounterShow;
     private static NetworkUnitAd Yandex;
-    private static JSONObject facebook,admob,yandex,applovin,pangle,unity;
+    private static JSONObject facebook,admob,yandex,applovin,unity;
     public static String OneSignalKey;
 
     public AdsUnites() {
@@ -42,12 +36,13 @@ public class AdsUnites {
             @Override
             public void onResponse(JSONObject response) {
                 //////////////////////////
+
                 OneSignalKey = response.optString("OneSignalKey");
+                interCounterShow = response.optInt("InterCounter");
                  facebook = response.optJSONObject("Facebook");
                  admob = response.optJSONObject("Admob");
                  yandex = response.optJSONObject("Yandex");
                  applovin = response.optJSONObject("Applovin");
-                 pangle = response.optJSONObject("Pangle");
                  unity = response.optJSONObject("Unity");
                 if (admob != null){
                     Admob = getAdUnite(admob);}
@@ -57,8 +52,6 @@ public class AdsUnites {
                     Yandex = getAdUnite(yandex);}
                 if (applovin != null){
                     Applovin = getAdUnite(applovin);}
-                if (pangle != null){
-                    Pangle = getAdUnite(pangle);}
                 if (unity != null){
                     Unity = getAdUnite(unity);}
 
@@ -67,7 +60,7 @@ public class AdsUnites {
                     Ads.ads.init(Mycontext);
                 }catch (IllegalArgumentException exception){
                     Ads.ads = Null.getInstance();
-                    Toast.makeText(Mycontext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("AdsError",exception.getMessage());
                 }
                 listener.isloaded();
 
@@ -106,8 +99,6 @@ public class AdsUnites {
             return Adsadmob.getInstance(Admob);
         }else if (unity != null && Unity.isOn()){
             return UnityAd.getInstance(Unity);
-        }else if (pangle != null && Pangle.isOn()){
-            return PangleAd.getInstance(Pangle);
         }else if (applovin != null && Applovin.isOn()) {
             return ApplovinAd.getInstance(Applovin);
         } else{
