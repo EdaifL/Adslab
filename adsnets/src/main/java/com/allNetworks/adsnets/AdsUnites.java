@@ -14,6 +14,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.onesignal.OneSignal;
 
 import org.json.JSONObject;
 
@@ -42,36 +43,47 @@ public class AdsUnites {
                 interCounterShow = response.optInt("InterCounter");
                 IsUnder = response.optBoolean("under");
                 IsOnApp = response.optBoolean("AppOn");
-                if (IsOnApp || !IsUnder){
-                 facebook = response.optJSONObject("Facebook");
-                 admob = response.optJSONObject("Admob");
-                 yandex = response.optJSONObject("Yandex");
-                 applovin = response.optJSONObject("Applovin");
-                 unity = response.optJSONObject("Unity");
-                if (admob != null){
-                    Admob = getAdUnite(admob);}
+
+                    OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+
+                    OneSignal.initWithContext(Mycontext);
+                    OneSignal.setAppId(OneSignalKey);
+                    OneSignal.promptForPushNotifications();
+
+                if (IsUnder) {
+                    listener.isUnder();
+                }else if (!IsOnApp){
+                    listener.isAppOff();
+                }else {
+                facebook = response.optJSONObject("Facebook");
+                admob = response.optJSONObject("Admob");
+                yandex = response.optJSONObject("Yandex");
+                applovin = response.optJSONObject("Applovin");
+                unity = response.optJSONObject("Unity");
+                if (admob != null) {
+                    Admob = getAdUnite(admob);
+                }
                 if (facebook != null)
                     Facebook = getAdUnite(facebook);
-                if (yandex != null){
-                    Yandex = getAdUnite(yandex);}
-                if (applovin != null){
-                    Applovin = getAdUnite(applovin);}
-                if (unity != null){
-                    Unity = getAdUnite(unity);}
+                if (yandex != null) {
+                    Yandex = getAdUnite(yandex);
+                }
+                if (applovin != null) {
+                    Applovin = getAdUnite(applovin);
+                }
+                if (unity != null) {
+                    Unity = getAdUnite(unity);
+                }
 
                 try {
                     Ads.ads = Switch();
                     Ads.ads.init(Mycontext);
-                }catch (IllegalArgumentException exception){
+                } catch (IllegalArgumentException exception) {
                     Ads.ads = Null.getInstance();
-                    Log.e("AdsError",exception.getMessage());
+                    Log.e("AdsError", exception.getMessage());
                 }
                 listener.isloaded();
-                } else if (IsUnder) {
-                    listener.isUnder();
-                }else if (!IsOnApp){
-                    listener.isAppOff();
-                }
+            }
 
 
             }
