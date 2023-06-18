@@ -27,6 +27,7 @@ public class AdsUnites {
     private static NetworkUnitAd Yandex;
     private static JSONObject facebook,admob,yandex,applovin,unity;
     public static String OneSignalKey;
+    private boolean IsUnder,IsOnApp;
 
     public AdsUnites() {
     }
@@ -39,6 +40,9 @@ public class AdsUnites {
 
                 OneSignalKey = response.optString("OneSignalKey");
                 interCounterShow = response.optInt("InterCounter");
+                IsUnder = response.optBoolean("under");
+                IsOnApp = response.optBoolean("AppOn");
+                if (IsOnApp || !IsUnder){
                  facebook = response.optJSONObject("Facebook");
                  admob = response.optJSONObject("Admob");
                  yandex = response.optJSONObject("Yandex");
@@ -63,6 +67,11 @@ public class AdsUnites {
                     Log.e("AdsError",exception.getMessage());
                 }
                 listener.isloaded();
+                } else if (IsUnder) {
+                    listener.isUnder();
+                }else if (!IsOnApp){
+                    listener.isAppOff();
+                }
 
 
             }
@@ -122,6 +131,8 @@ public class AdsUnites {
     public interface JsonListener{
         void isloaded();
         void fieldtoLoad(String error);
+        void isUnder();
+        void isAppOff();
     }
 
 }
