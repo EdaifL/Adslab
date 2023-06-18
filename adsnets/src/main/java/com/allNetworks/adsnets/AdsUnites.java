@@ -43,9 +43,7 @@ public class AdsUnites {
                 interCounterShow = response.optInt("InterCounter");
                 IsUnder = response.optBoolean("under");
                 IsOnApp = response.optBoolean("AppOn");
-
                     OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
-
                     OneSignal.initWithContext(Mycontext);
                     OneSignal.setAppId(OneSignalKey);
                     OneSignal.promptForPushNotifications();
