@@ -291,4 +291,14 @@ public class FaceAds implements AdsManage {
 
     }
 
+    @Override
+    public void LeadReward(Context context) {
+
+    }
+
+    @Override
+    public void Show_Reward(Context context, Reward reward) {
+
+    }
+
 }

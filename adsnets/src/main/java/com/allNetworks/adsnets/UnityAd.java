@@ -171,6 +171,16 @@ public class UnityAd implements AdsManage {
 
     }
 
+    @Override
+    public void LeadReward(Context context) {
+
+    }
+
+    @Override
+    public void Show_Reward(Context context, Reward reward) {
+
+    }
+
 
     private class BAnnerAdsLoadListner implements BannerView.IListener {
 

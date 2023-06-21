@@ -51,4 +51,14 @@ public class Null implements AdsManage{
     public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
 
     }
+
+    @Override
+    public void LeadReward(Context context) {
+
+    }
+
+    @Override
+    public void Show_Reward(Context context, Reward reward) {
+
+    }
 }

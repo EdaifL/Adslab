@@ -255,6 +255,16 @@ public class YandexClass implements AdsManage {
     }
 
     @Override
+    public void LeadReward(Context context) {
+
+    }
+
+    @Override
+    public void Show_Reward(Context context, Reward reward) {
+
+    }
+
+    @Override
     public void Show_OpenApp(Context context) {
 
     }

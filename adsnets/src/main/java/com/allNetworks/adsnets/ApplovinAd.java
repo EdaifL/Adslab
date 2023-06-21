@@ -14,9 +14,12 @@ import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
+import com.applovin.mediation.MaxReward;
+import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxAppOpenAd;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.mediation.nativeAds.MaxNativeAdListener;
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
@@ -28,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ApplovinAd implements AdsManage {
     private MaxAppOpenAd appOpenAd;
+    private MaxRewardedAd rewardedAd;
     private static boolean IsOpenshowed = false;
     private MaxAdView adView;
     private MaxInterstitialAd interstitialAd;
@@ -35,21 +39,19 @@ public class ApplovinAd implements AdsManage {
     private String LogTag = "Applovin";
     private MaxNativeAdLoader nativeAdLoader;
     private MaxAd nativeAd;
-    private String OpenAppId,AppId;
-    private String BannerUnit;
-    private String Interstitial_Unit;
-    private String Native_Unite;
+    private String OpenAppId,BannerUnit,Interstitial_Unit,Native_Unite,RewardVideoId;
     private String TAG = "Applovin";
     private static int Requests = 0;
     public static ApplovinAd applovinAd;
+
     public static ApplovinAd getInstance(NetworkUnitAd unitAd){
         if (applovinAd == null){
             applovinAd = new ApplovinAd();
             applovinAd.OpenAppId = unitAd.getOPEN_APP_ID();
             applovinAd.BannerUnit = unitAd.getBANNER_Id();
-            applovinAd.AppId = unitAd.getAPP_ID();
             applovinAd.Interstitial_Unit = unitAd.getINTERSTITIAL_Id();
             applovinAd.Native_Unite = unitAd.getNATIVE_Id();
+            applovinAd.RewardVideoId = unitAd.getRewardVideoId();
         }
         return applovinAd;
     }
@@ -379,10 +381,78 @@ public class ApplovinAd implements AdsManage {
 
 
 
-
+    private int           RretryAttempt;
 
     @Override
     public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
+
+    }
+
+    @Override
+    public void LeadReward(Context context) {
+        rewardedAd = MaxRewardedAd.getInstance( RewardVideoId, (Activity) context);
+        rewardedAd.setListener(new MaxRewardedAdListener() {
+            @Override
+            public void onUserRewarded(MaxAd maxAd, MaxReward maxReward) {
+
+            }
+
+            @Override
+            public void onRewardedVideoStarted(MaxAd maxAd) {
+
+            }
+
+            @Override
+            public void onRewardedVideoCompleted(MaxAd maxAd) {
+
+            }
+
+            @Override
+            public void onAdLoaded(MaxAd maxAd) {
+                RretryAttempt = 0;
+            }
+
+            @Override
+            public void onAdDisplayed(MaxAd maxAd) {
+
+            }
+
+            @Override
+            public void onAdHidden(MaxAd maxAd) {
+
+            }
+
+            @Override
+            public void onAdClicked(MaxAd maxAd) {
+
+            }
+
+            @Override
+            public void onAdLoadFailed(String s, MaxError maxError) {
+                RretryAttempt++;
+                long delayMillis = TimeUnit.SECONDS.toMillis( (long) Math.pow( 2, Math.min( 6, RretryAttempt ) ) );
+
+                new Handler().postDelayed( new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        rewardedAd.loadAd();
+                    }
+                }, delayMillis );
+
+            }
+
+            @Override
+            public void onAdDisplayFailed(MaxAd maxAd, MaxError maxError) {
+                rewardedAd.loadAd();
+            }
+        });
+        rewardedAd.loadAd();
+    }
+
+    @Override
+    public void Show_Reward(Context context, Reward reward) {
 
     }
 

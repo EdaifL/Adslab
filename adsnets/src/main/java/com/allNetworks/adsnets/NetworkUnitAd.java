@@ -8,11 +8,12 @@ public class NetworkUnitAd {
     private  String INTERSTITIAL_Id ;
     private  String APP_ID;
     private  String OPEN_APP_ID;
+    private String RewardVideoId;
 
     public NetworkUnitAd() {
     }
 
-    public NetworkUnitAd(boolean isOn, String BANNER_Id, String NATIVE_BANNER_Id, String NATIVE_Id, String INTERSTITIAL_Id, String APP_ID, String OPEN_APP_ID) {
+    public NetworkUnitAd(boolean isOn, String BANNER_Id, String NATIVE_BANNER_Id, String NATIVE_Id, String INTERSTITIAL_Id, String APP_ID, String OPEN_APP_ID, String rewardVideoId) {
         this.isOn = isOn;
         this.BANNER_Id = BANNER_Id;
         this.NATIVE_BANNER_Id = NATIVE_BANNER_Id;
@@ -20,6 +21,7 @@ public class NetworkUnitAd {
         this.INTERSTITIAL_Id = INTERSTITIAL_Id;
         this.APP_ID = APP_ID;
         this.OPEN_APP_ID = OPEN_APP_ID;
+        this.RewardVideoId = rewardVideoId;
     }
 
     public boolean isOn() {
@@ -44,6 +46,14 @@ public class NetworkUnitAd {
 
     public void setNATIVE_BANNER_Id(String NATIVE_BANNER_Id) {
         this.NATIVE_BANNER_Id = NATIVE_BANNER_Id;
+    }
+
+    public String getRewardVideoId() {
+        return RewardVideoId;
+    }
+
+    public void setRewardVideoId(String rewardVideoId) {
+        RewardVideoId = rewardVideoId;
     }
 
     public String getNATIVE_Id() {
@@ -77,4 +87,19 @@ public class NetworkUnitAd {
     public void setOPEN_APP_ID(String OPEN_APP_ID) {
         this.OPEN_APP_ID = OPEN_APP_ID;
     }
+
+    @Override
+    public String toString() {
+        return "NetworkUnitAd{" +
+                "isOn=" + isOn +
+                ", BANNER_Id='" + BANNER_Id + '\'' +
+                ", NATIVE_BANNER_Id='" + NATIVE_BANNER_Id + '\'' +
+                ", NATIVE_Id='" + NATIVE_Id + '\'' +
+                ", INTERSTITIAL_Id='" + INTERSTITIAL_Id + '\'' +
+                ", APP_ID='" + APP_ID + '\'' +
+                ", OPEN_APP_ID='" + OPEN_APP_ID + '\'' +
+                ", RewardVideoId='" + RewardVideoId + '\'' +
+                '}';
+    }
+
 }

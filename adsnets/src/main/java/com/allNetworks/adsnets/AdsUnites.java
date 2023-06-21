@@ -18,6 +18,8 @@ import com.onesignal.OneSignal;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class AdsUnites {
 
     private  static NetworkUnitAd Admob;
@@ -28,7 +30,8 @@ public class AdsUnites {
     private static NetworkUnitAd Yandex;
     private static JSONObject facebook,admob,yandex,applovin,unity;
     public static String OneSignalKey;
-    private boolean IsUnder,IsOnApp;
+    private boolean IsUnder,IsOnApp, isIsp;
+
 
     public AdsUnites() {
     }
@@ -53,34 +56,58 @@ public class AdsUnites {
                 }else if (!IsOnApp){
                     listener.isAppOff();
                 }else {
-                facebook = response.optJSONObject("Facebook");
-                admob = response.optJSONObject("Admob");
-                yandex = response.optJSONObject("Yandex");
-                applovin = response.optJSONObject("Applovin");
-                unity = response.optJSONObject("Unity");
-                if (admob != null) {
-                    Admob = getAdUnite(admob);
-                }
-                if (facebook != null)
-                    Facebook = getAdUnite(facebook);
-                if (yandex != null) {
-                    Yandex = getAdUnite(yandex);
-                }
-                if (applovin != null) {
-                    Applovin = getAdUnite(applovin);
-                }
-                if (unity != null) {
-                    Unity = getAdUnite(unity);
-                }
+                    new ConnectionInfo(new ConnectionInfo.ConnectionInfoListener() {
+                        @Override
+                        public void onConnectionInfoReceived(ArrayList<String> result) {
+                            for (String isp: result) {
+                                if (isp.contains("MarocTelecom")){
+                                    isIsp =true;
+                                    break;
+                                }else {
+                                    isIsp = false;
+                                }
+                            }
+                            if (!isIsp){
+                                facebook = response.optJSONObject("Facebook");
+                                admob = response.optJSONObject("Admob");
+                                yandex = response.optJSONObject("Yandex");
+                                applovin = response.optJSONObject("Applovin");
+                                unity = response.optJSONObject("Unity");
+                                if (admob != null) {
+                                    Admob = getAdUnite(admob);
+                                }
+                                if (facebook != null)
+                                    Facebook = getAdUnite(facebook);
+                                if (yandex != null) {
+                                    Yandex = getAdUnite(yandex);
+                                }
+                                if (applovin != null) {
+                                    Applovin = getAdUnite(applovin);
+                                }
+                                if (unity != null) {
+                                    Unity = getAdUnite(unity);
+                                }
 
-                try {
-                    Ads.ads = Switch();
-                    Ads.ads.init(Mycontext);
-                } catch (IllegalArgumentException exception) {
-                    Ads.ads = Null.getInstance();
-                    Log.e("AdsError", exception.getMessage());
-                }
-                listener.isloaded();
+                                try {
+                                    Ads.ads = Switch();
+                                    Ads.ads.init(Mycontext);
+                                } catch (IllegalArgumentException exception) {
+                                    Ads.ads = Null.getInstance();
+                                    Log.e("AdsError", exception.getMessage());
+                                }
+                                listener.isloaded();}
+                            else {
+                                listener.isUnder();
+                            }
+
+                        }
+
+                        @Override
+                        public void onConnectionInfoError(String message) {
+
+                        }
+                    }).retrieveConnectionInfo();
+
             }
 
 
