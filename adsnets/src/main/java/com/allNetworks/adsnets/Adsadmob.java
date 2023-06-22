@@ -28,7 +28,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
@@ -36,7 +35,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.google.android.gms.ads.nativead.NativeAdView;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.rewarded.ServerSideVerificationOptions;
@@ -47,7 +45,7 @@ public class Adsadmob implements AdsManage{
     private RewardedAd rewardedAd;
     private InterstitialAd mInterstitialAd;
     private Dialog dialog;
-    private String BannerUnit ,InterstitialUnit ,NativeUnit;
+    private String BannerUnit ,InterstitialUnit ,NativeUnit,RewardVideoId;
     private NativeAd nativeAd;
     private AdRequest adRequest ;
     private String appId;
@@ -61,6 +59,7 @@ public class Adsadmob implements AdsManage{
             admob.InterstitialUnit = unitAd.getINTERSTITIAL_Id();
             admob.NativeUnit = unitAd.getNATIVE_Id();
             admob.appId = unitAd.getAPP_ID();
+            admob.RewardVideoId = unitAd.getRewardVideoId();
         }
         return admob;
     }
@@ -206,7 +205,7 @@ public class Adsadmob implements AdsManage{
     }
 
     @Override
-    public void Show_Reward(Context context, Reward reward) {
+    public void Show_Reward(Context context, Reward rewardA) {
         dialog = new progessDialog(context);
         dialog.show();
         if (rewardedAd != null) {
@@ -222,14 +221,14 @@ public class Adsadmob implements AdsManage{
                 public void onAdDismissedFullScreenContent() {
 
                     rewardedAd = null;
-                    reward.Rewarded();
+                    rewardA.Rewarded();
                     if (dialog.isShowing()){ dialog.dismiss();}
                 }
 
                 @Override
                 public void onAdFailedToShowFullScreenContent(AdError adError) {
                     rewardedAd = null;
-                    reward.FieldToreward(adError.getMessage());
+                    rewardA.FieldToreward(adError.getMessage());
                     if (dialog.isShowing()){ dialog.dismiss();}
 
                 }
@@ -246,13 +245,13 @@ public class Adsadmob implements AdsManage{
             });
 
         } else {
-            LeadReward(context);
+            LoadReward(context);
             AdRequest adRequest = new AdRequest.Builder().build();
-            RewardedAd.load(context, "ca-app-pub-3940256099942544/5224354917",
+            RewardedAd.load(context, RewardVideoId,
                     adRequest, new RewardedAdLoadCallback() {
                         @Override
                         public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                            reward.FieldToreward(loadAdError.getMessage());
+                            rewardA.FieldToreward(loadAdError.getMessage());
                         }
 
                         @Override
@@ -267,14 +266,14 @@ public class Adsadmob implements AdsManage{
 
                                 @Override
                                 public void onAdDismissedFullScreenContent() {
-                                    reward.Rewarded();
+                                    rewardA.Rewarded();
                                     if (dialog.isShowing()){ dialog.dismiss();}
 
                                 }
 
                                 @Override
                                 public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                    reward.FieldToreward(adError.getMessage());
+                                    rewardA.FieldToreward(adError.getMessage());
                                     if (dialog.isShowing()){ dialog.dismiss();}
 
                                 }
@@ -297,9 +296,9 @@ public class Adsadmob implements AdsManage{
     }
 
     @Override
-    public void LeadReward(Context context) {
+    public void LoadReward(Context context) {
         AdRequest adRequest = new AdRequest.Builder().build();
-        RewardedAd.load(context, "ca-app-pub-3940256099942544/5224354917",
+        RewardedAd.load(context, RewardVideoId,
                 adRequest, new RewardedAdLoadCallback() {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {

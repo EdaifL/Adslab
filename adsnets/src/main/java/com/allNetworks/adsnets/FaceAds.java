@@ -23,6 +23,8 @@ import com.facebook.ads.NativeAdView;
 import com.facebook.ads.NativeAdViewAttributes;
 import com.facebook.ads.NativeBannerAd;
 import com.facebook.ads.NativeBannerAdView;
+import com.facebook.ads.RewardedVideoAd;
+import com.facebook.ads.RewardedVideoAdListener;
 
 public class FaceAds implements AdsManage {
 
@@ -30,10 +32,12 @@ public class FaceAds implements AdsManage {
     private InterstitialAd interstitialAd;
     private Dialog dialog;
     private NativeBannerAd nativeBannerAd;
+    private RewardedVideoAd rewardedVideoAd;
+
     private NativeAd nativeAd;
     private AdView FBadView;
     private String BannerUnit ;
-    private String Interstitial_Unit;
+    private String Interstitial_Unit,RewardVideoId;
     private String Native_Unite = "";
     private String NativeBanner_Unite = "";
     private static   int Requests = 0;
@@ -44,6 +48,7 @@ public class FaceAds implements AdsManage {
             facebook.Interstitial_Unit = unitAd.getINTERSTITIAL_Id();
             facebook.Native_Unite = unitAd.getNATIVE_Id();
             facebook.NativeBanner_Unite = unitAd.getNATIVE_BANNER_Id();
+            facebook.RewardVideoId = unitAd.getRewardVideoId();
         }
         return facebook;
     }
@@ -292,13 +297,127 @@ public class FaceAds implements AdsManage {
     }
 
     @Override
-    public void LeadReward(Context context) {
+    public void LoadReward(Context context) {
+        rewardedVideoAd = new RewardedVideoAd(context, RewardVideoId);
+        rewardedVideoAd.loadAd(
+                rewardedVideoAd.buildLoadAdConfig()
+                        .withAdListener(new RewardedVideoAdListener() {
+                            @Override
+                            public void onRewardedVideoCompleted() {
 
+                            }
+
+                            @Override
+                            public void onRewardedVideoClosed() {
+
+                            }
+
+                            @Override
+                            public void onError(Ad ad, AdError adError) {
+
+                            }
+
+                            @Override
+                            public void onAdLoaded(Ad ad) {
+
+                            }
+
+                            @Override
+                            public void onAdClicked(Ad ad) {
+
+                            }
+
+                            @Override
+                            public void onLoggingImpression(Ad ad) {
+
+                            }
+                        })
+                        .build());
     }
 
+    private RewardedVideoAd rewardedVideoAd1;
     @Override
-    public void Show_Reward(Context context, Reward reward) {
+    public void Show_Reward(Context context, Reward rewardA) {
+            if (rewardedVideoAd != null){
+               dialog = new progessDialog(context);
+                rewardedVideoAd.loadAd(rewardedVideoAd.buildLoadAdConfig().withAdListener(new RewardedVideoAdListener() {
+                    @Override
+                    public void onRewardedVideoCompleted() {
+                        rewardA.Rewarded();
+                        rewardedVideoAd = null;
+                        if (dialog.isShowing()){ dialog.dismiss();}
+                    }
 
+                    @Override
+                    public void onRewardedVideoClosed() {
+
+                        if (dialog.isShowing()){ dialog.dismiss();}
+
+                    }
+
+                    @Override
+                    public void onError(Ad ad, AdError adError) {
+                        rewardA.FieldToreward(adError.getErrorMessage());
+                        if (dialog.isShowing()){ dialog.dismiss();}
+
+                    }
+
+                    @Override
+                    public void onAdLoaded(Ad ad) {
+                        rewardedVideoAd.show();
+                    }
+
+                    @Override
+                    public void onAdClicked(Ad ad) {
+
+                    }
+
+                    @Override
+                    public void onLoggingImpression(Ad ad) {
+
+                    }
+                }).build());
+            }else {
+                 rewardedVideoAd1 = new RewardedVideoAd(context,RewardVideoId);
+                rewardedVideoAd1.loadAd(rewardedVideoAd1.buildLoadAdConfig().withAdListener(new RewardedVideoAdListener() {
+                    @Override
+                    public void onRewardedVideoCompleted() {
+                        rewardA.Rewarded();
+                        rewardedVideoAd1 = null;
+                        if (dialog.isShowing()){ dialog.dismiss();}
+                    }
+
+                    @Override
+                    public void onRewardedVideoClosed() {
+
+                        if (dialog.isShowing()){ dialog.dismiss();}
+
+                    }
+
+                    @Override
+                    public void onError(Ad ad, AdError adError) {
+                        rewardA.FieldToreward(adError.getErrorMessage());
+                        if (dialog.isShowing()){ dialog.dismiss();}
+
+                    }
+
+                    @Override
+                    public void onAdLoaded(Ad ad) {
+                        rewardedVideoAd1.show();
+                    }
+
+                    @Override
+                    public void onAdClicked(Ad ad) {
+
+                    }
+
+                    @Override
+                    public void onLoggingImpression(Ad ad) {
+
+                    }
+                }).build());
+
+            }
     }
 
 }

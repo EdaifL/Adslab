@@ -53,12 +53,12 @@ public class Null implements AdsManage{
     }
 
     @Override
-    public void LeadReward(Context context) {
+    public void LoadReward(Context context) {
 
     }
 
     @Override
-    public void Show_Reward(Context context, Reward reward) {
+    public void Show_Reward(Context context, Reward rewardA) {
 
     }
 }

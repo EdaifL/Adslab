@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.UnityAdsLoadOptions;
 import com.unity3d.ads.UnityAdsShowOptions;
 import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
@@ -21,7 +22,8 @@ public class UnityAd implements AdsManage {
     private Dialog dialog;
     private String BannerUnit;
     private String InterstitialUnit;
-    private String NativeUnit;
+    private String RewardVideoId;
+
     private static   int Requests = 0;
     private final Boolean TestMode = false;
 
@@ -33,6 +35,7 @@ public class UnityAd implements AdsManage {
             unity.AppId = unitAd.getAPP_ID();
             unity.BannerUnit = unitAd.getBANNER_Id();
             unity.InterstitialUnit = unitAd.getINTERSTITIAL_Id();
+            unity.RewardVideoId = unitAd.getRewardVideoId();
         }
         return unity;
     }
@@ -42,14 +45,10 @@ public class UnityAd implements AdsManage {
 
         UnityAds.initialize(context, AppId, TestMode);
     }
-
-
-
     @Override
     public void Show_OpenApp(Context context) {
 
     }
-
     @Override
     public void Show_Banner(Activity activity, LinearLayout linearLayout) {
         BannerView topBanner = new BannerView(activity, BannerUnit, new UnityBannerSize(320, 50));
@@ -140,7 +139,6 @@ public class UnityAd implements AdsManage {
            interstital.isShowed();
        }
     }
-
     @Override
     public boolean loadInter(Context context) {
         UnityAds.load(InterstitialUnit, new IUnityAdsLoadListener() {
@@ -157,31 +155,66 @@ public class UnityAd implements AdsManage {
         return isLoaded;
     }
 
-
-
-
-
     @Override
     public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
 
     }
-
     @Override
     public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
 
     }
-
     @Override
-    public void LeadReward(Context context) {
+    public void LoadReward(Context context) {
+        UnityAds.load(RewardVideoId, new UnityAdsLoadOptions(), new IUnityAdsLoadListener() {
+            @Override
+            public void onUnityAdsAdLoaded(String placementId) {
 
+            }
+
+            @Override
+            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+
+            }
+        });
     }
-
     @Override
-    public void Show_Reward(Context context, Reward reward) {
+    public void Show_Reward(Context context, Reward rewardA) {
+       dialog = new progessDialog(context);
+        UnityAds.load(RewardVideoId, new UnityAdsLoadOptions(), new IUnityAdsLoadListener() {
+            @Override
+            public void onUnityAdsAdLoaded(String placementId) {
+                UnityAds.show((Activity) context, RewardVideoId, new IUnityAdsShowListener() {
+                    @Override
+                    public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+                        rewardA.FieldToreward(message);
+                        if ( dialog.isShowing()){dialog.dismiss();}
+                    }
 
+                    @Override
+                    public void onUnityAdsShowStart(String placementId) {
+
+                    }
+
+                    @Override
+                    public void onUnityAdsShowClick(String placementId) {
+
+                    }
+
+                    @Override
+                    public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+                        rewardA.Rewarded();
+                        LoadReward(context);
+                        if (dialog.isShowing()){ dialog.dismiss();}
+                    }
+                });
+            }
+
+            @Override
+            public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                rewardA.FieldToreward(message);
+            }
+        });
     }
-
-
     private class BAnnerAdsLoadListner implements BannerView.IListener {
 
         @Override

@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void isloaded() {
                 textView.setText("Is loaded and it's not a Isp selected");
-                Ads.ads.LeadReward(MainActivity.this);
+                Ads.ads.LoadReward(MainActivity.this);
                textView.setOnClickListener(v -> {
                    Ads.ads.Show_Reward(MainActivity.this, new AdsManage.Reward() {
                        @Override

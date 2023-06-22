@@ -389,7 +389,7 @@ public class ApplovinAd implements AdsManage {
     }
 
     @Override
-    public void LeadReward(Context context) {
+    public void LoadReward(Context context) {
         rewardedAd = MaxRewardedAd.getInstance( RewardVideoId, (Activity) context);
         rewardedAd.setListener(new MaxRewardedAdListener() {
             @Override
@@ -452,8 +452,118 @@ public class ApplovinAd implements AdsManage {
     }
 
     @Override
-    public void Show_Reward(Context context, Reward reward) {
+    public void Show_Reward(Context context, Reward rewardA) {
+        dialog = new progessDialog(context);
+        dialog.show();
+        if ( rewardedAd.isReady() )
+        {
+            rewardedAd.showAd();
+            rewardedAd.setListener(new MaxRewardedAdListener() {
+                @Override
+                public void onUserRewarded(MaxAd maxAd, MaxReward maxReward) {
+                    rewardedAd = null;
+                    rewardA.Rewarded();
+                    if (dialog.isShowing()){dialog.dismiss();}
+                }
 
+                @Override
+                public void onRewardedVideoStarted(MaxAd maxAd) {
+
+                }
+
+                @Override
+                public void onRewardedVideoCompleted(MaxAd maxAd) {
+                    rewardedAd = null;
+                    rewardA.Rewarded();
+                    if (dialog.isShowing()){dialog.dismiss();}
+                }
+
+                @Override
+                public void onAdLoaded(MaxAd maxAd) {
+
+                }
+
+                @Override
+                public void onAdDisplayed(MaxAd maxAd) {
+
+                }
+
+                @Override
+                public void onAdHidden(MaxAd maxAd) {
+                    LoadReward(context);
+                }
+
+                @Override
+                public void onAdClicked(MaxAd maxAd) {
+
+                }
+
+                @Override
+                public void onAdLoadFailed(String s, MaxError maxError) {
+                    rewardA.FieldToreward(maxError.getMessage());
+                    if (dialog.isShowing()){dialog.dismiss();}
+                }
+
+                @Override
+                public void onAdDisplayFailed(MaxAd maxAd, MaxError maxError) {
+
+                }
+            });
+        }
+        else {
+            MaxRewardedAd rewardedAd1 = MaxRewardedAd.getInstance(RewardVideoId, (Activity) context);
+            rewardedAd1.setListener(new MaxRewardedAdListener() {
+                @Override
+                public void onUserRewarded(MaxAd maxAd, MaxReward maxReward) {
+
+                }
+
+                @Override
+                public void onRewardedVideoStarted(MaxAd maxAd) {
+
+                }
+
+                @Override
+                public void onRewardedVideoCompleted(MaxAd maxAd) {
+                        rewardA.Rewarded();
+                    if (dialog.isShowing()){dialog.dismiss();}
+                }
+
+                @Override
+                public void onAdLoaded(MaxAd maxAd) {
+                    RretryAttempt = 0;
+                    rewardedAd1.showAd();
+                }
+
+                @Override
+                public void onAdDisplayed(MaxAd maxAd) {
+
+                }
+
+                @Override
+                public void onAdHidden(MaxAd maxAd) {
+                    if (dialog.isShowing()){dialog.dismiss();}
+                }
+
+                @Override
+                public void onAdClicked(MaxAd maxAd) {
+
+                }
+
+                @Override
+                public void onAdLoadFailed(String s, MaxError maxError) {
+
+                    rewardA.FieldToreward(maxError.getMessage());
+                    if (dialog.isShowing()){dialog.dismiss();}
+                }
+
+                @Override
+                public void onAdDisplayFailed(MaxAd maxAd, MaxError maxError) {
+                    rewardA.FieldToreward(maxError.getMessage());
+                    if (dialog.isShowing()){dialog.dismiss();}
+                }
+            });
+        }
     }
 
 }

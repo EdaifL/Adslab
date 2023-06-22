@@ -161,6 +161,7 @@ public class AdsUnites {
         unitAd.setINTERSTITIAL_Id(json.optString("InterId"));
         unitAd.setNATIVE_Id(json.optString("NativeId"));
         unitAd.setNATIVE_BANNER_Id(json.optString("NativeBannerId"));
+        unitAd.setRewardVideoId(json.optString("RewardId"));
         return unitAd;
 
 

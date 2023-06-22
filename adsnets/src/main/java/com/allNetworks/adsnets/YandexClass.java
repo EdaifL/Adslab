@@ -24,14 +24,16 @@ import com.yandex.mobile.ads.nativeads.NativeAdLoadListener;
 import com.yandex.mobile.ads.nativeads.NativeAdLoader;
 import com.yandex.mobile.ads.nativeads.NativeAdRequestConfiguration;
 import com.yandex.mobile.ads.nativeads.template.NativeBannerView;
+import com.yandex.mobile.ads.rewarded.Reward;
+import com.yandex.mobile.ads.rewarded.RewardedAd;
+import com.yandex.mobile.ads.rewarded.RewardedAdEventListener;
 
 public class YandexClass implements AdsManage {
     private static YandexClass yandexAds;
     private Dialog dialog;
-    private String BannerUnit ="";
-    private String Interstitial_Unit="";
+    private RewardedAd rewardedAd;
+    private String BannerUnit ,Interstitial_Unit,Native_Unite , RewardVideoId;
     private static   int Requests = 0;
-    private String Native_Unite = "";
     private static final String YANDEX_MOBILE_ADS_TAG = "YandexMobileAds";
     public static YandexClass getInstance(NetworkUnitAd unitAd){
         if (yandexAds == null){
@@ -39,6 +41,7 @@ public class YandexClass implements AdsManage {
             yandexAds.BannerUnit = unitAd.getBANNER_Id();
             yandexAds.Interstitial_Unit= unitAd.getINTERSTITIAL_Id();
             yandexAds.Native_Unite = unitAd.getNATIVE_Id();
+            yandexAds.RewardVideoId = unitAd.getRewardVideoId();
         }
         return yandexAds;
     }
@@ -255,13 +258,123 @@ public class YandexClass implements AdsManage {
     }
 
     @Override
-    public void LeadReward(Context context) {
+    public void LoadReward(Context context) {
+        final AdRequest adRequest = new AdRequest.Builder().build();
+        rewardedAd = new RewardedAd(context);
+        rewardedAd.setAdUnitId(RewardVideoId);
+        rewardedAd.loadAd(adRequest);
 
     }
 
     @Override
-    public void Show_Reward(Context context, Reward reward) {
+    public void Show_Reward(Context context, Reward rewardA) {
+        dialog = new progessDialog(context);
+        if (rewardedAd.isLoaded()){
+            rewardedAd.show();
+            rewardedAd.setRewardedAdEventListener(new RewardedAdEventListener() {
+                @Override
+                public void onAdLoaded() {
 
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
+                    rewardA.FieldToreward(adRequestError.getDescription());
+                    if (dialog.isShowing()){ dialog.dismiss();}
+
+                }
+
+                @Override
+                public void onAdShown() {
+
+                }
+
+                @Override
+                public void onAdDismissed() {
+                    if (dialog.isShowing()){ dialog.dismiss();}
+                }
+
+                @Override
+                public void onRewarded(@NonNull com.yandex.mobile.ads.rewarded.Reward reward) {
+                    rewardA.Rewarded();
+                    if (dialog.isShowing()){ dialog.dismiss();}
+                }
+
+                @Override
+                public void onAdClicked() {
+
+                }
+
+                @Override
+                public void onLeftApplication() {
+
+                }
+
+                @Override
+                public void onReturnedToApplication() {
+
+                }
+
+                @Override
+                public void onImpression(@Nullable ImpressionData impressionData) {
+
+                }
+            });
+        }else {
+            final AdRequest adRequest = new AdRequest.Builder().build();
+            RewardedAd rewardedAd1 = new RewardedAd(context);
+            rewardedAd1.setAdUnitId(RewardVideoId);
+            rewardedAd1.loadAd(adRequest);
+            rewardedAd1.setRewardedAdEventListener(new RewardedAdEventListener() {
+                @Override
+                public void onAdLoaded() {
+                        rewardedAd1.show();
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
+                    rewardA.FieldToreward(adRequestError.getDescription());
+                    if (dialog.isShowing()){ dialog.dismiss();}
+
+                }
+
+                @Override
+                public void onAdShown() {
+
+                }
+
+                @Override
+                public void onAdDismissed() {
+                    if (dialog.isShowing()){ dialog.dismiss();}
+                }
+
+                @Override
+                public void onRewarded(@NonNull com.yandex.mobile.ads.rewarded.Reward reward) {
+                    rewardA.Rewarded();
+                    if (dialog.isShowing()){ dialog.dismiss();}
+                }
+
+                @Override
+                public void onAdClicked() {
+
+                }
+
+                @Override
+                public void onLeftApplication() {
+
+                }
+
+                @Override
+                public void onReturnedToApplication() {
+
+                }
+
+                @Override
+                public void onImpression(@Nullable ImpressionData impressionData) {
+
+                }
+            });
+        }
     }
 
     @Override

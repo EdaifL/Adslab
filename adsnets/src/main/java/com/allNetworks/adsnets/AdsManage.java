@@ -13,8 +13,8 @@ public interface AdsManage {
     boolean loadInter(Context context);
     void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView);
     void Show_NativeBanner(Context context, LinearLayout linearLayout );
-    void LeadReward(Context context);
-    void Show_Reward(Context context,Reward reward);
+    void LoadReward(Context context);
+    void Show_Reward(Context context,Reward rewardA);
 
     public interface Interstital{
         void isShowed();
