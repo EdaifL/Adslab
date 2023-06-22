@@ -338,8 +338,10 @@ public class FaceAds implements AdsManage {
     private RewardedVideoAd rewardedVideoAd1;
     @Override
     public void Show_Reward(Context context, Reward rewardA) {
+        dialog = new progessDialog(context);
+        dialog.show();
             if (rewardedVideoAd != null){
-               dialog = new progessDialog(context);
+
                 rewardedVideoAd.loadAd(rewardedVideoAd.buildLoadAdConfig().withAdListener(new RewardedVideoAdListener() {
                     @Override
                     public void onRewardedVideoCompleted() {
@@ -350,7 +352,7 @@ public class FaceAds implements AdsManage {
 
                     @Override
                     public void onRewardedVideoClosed() {
-
+                            LoadReward(context);
                         if (dialog.isShowing()){ dialog.dismiss();}
 
                     }
@@ -359,7 +361,7 @@ public class FaceAds implements AdsManage {
                     public void onError(Ad ad, AdError adError) {
                         rewardA.FieldToreward(adError.getErrorMessage());
                         if (dialog.isShowing()){ dialog.dismiss();}
-
+                        loadInter(context);
                     }
 
                     @Override
@@ -385,6 +387,7 @@ public class FaceAds implements AdsManage {
                         rewardA.Rewarded();
                         rewardedVideoAd1 = null;
                         if (dialog.isShowing()){ dialog.dismiss();}
+
                     }
 
                     @Override

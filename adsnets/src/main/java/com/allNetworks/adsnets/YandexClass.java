@@ -269,6 +269,7 @@ public class YandexClass implements AdsManage {
     @Override
     public void Show_Reward(Context context, Reward rewardA) {
         dialog = new progessDialog(context);
+        dialog.show();
         if (rewardedAd.isLoaded()){
             rewardedAd.show();
             rewardedAd.setRewardedAdEventListener(new RewardedAdEventListener() {
@@ -292,12 +293,16 @@ public class YandexClass implements AdsManage {
                 @Override
                 public void onAdDismissed() {
                     if (dialog.isShowing()){ dialog.dismiss();}
+                    rewardedAd = null;
+                    LoadReward(context);
                 }
 
                 @Override
                 public void onRewarded(@NonNull com.yandex.mobile.ads.rewarded.Reward reward) {
                     rewardA.Rewarded();
                     if (dialog.isShowing()){ dialog.dismiss();}
+                    rewardedAd = null;
+                    LoadReward(context);
                 }
 
                 @Override

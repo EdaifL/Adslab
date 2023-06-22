@@ -180,6 +180,7 @@ public class UnityAd implements AdsManage {
     @Override
     public void Show_Reward(Context context, Reward rewardA) {
        dialog = new progessDialog(context);
+       dialog.show();
         UnityAds.load(RewardVideoId, new UnityAdsLoadOptions(), new IUnityAdsLoadListener() {
             @Override
             public void onUnityAdsAdLoaded(String placementId) {
