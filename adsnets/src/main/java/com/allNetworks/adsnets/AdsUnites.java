@@ -65,11 +65,17 @@ public class AdsUnites {
                         @Override
                         public void onConnectionInfoReceived(ArrayList<String> result) {
                             for (String isp: result) {
-                                if (isp.contains("Google LLC")||isp.contains("Google")){
-                                    isIsp =true;
+                                for (String json: IspList) {
+                                    if (isp.contains(json)){
+                                        isIsp =true;
+                                        break;
+                                    }else {
+                                        isIsp = false;
+                                    }
+
+                                }
+                                if (isIsp){
                                     break;
-                                }else {
-                                    isIsp = false;
                                 }
                             }
                             if (!isIsp){
