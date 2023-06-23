@@ -75,7 +75,6 @@ public class AdsUnites {
                     OneSignal.initWithContext(Mycontext);
                     OneSignal.setAppId(OneSignalKey);
                     OneSignal.promptForPushNotifications();
-
                 if (IsUnder) {
                     listener.isUnder();
                 }else if (!IsOnApp){
