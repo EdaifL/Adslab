@@ -15,6 +15,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.onesignal.OneSignal;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class AdsUnites {
     private static JSONObject facebook,admob,yandex,applovin,unity;
     public static String OneSignalKey;
     private boolean IsUnder,IsOnApp, isIsp;
+    private ArrayList<String> IspList;
     public AdsUnites() {
     }
     public AdsUnites(Context Mycontext, String url,JsonListener listener) {
@@ -36,11 +38,19 @@ public class AdsUnites {
             @Override
             public void onResponse(JSONObject response) {
                 //////////////////////////
-
+                IspList = new ArrayList<>();
                 OneSignalKey = response.optString("OneSignalKey");
                 interCounterShow = response.optInt("InterCounter");
                 IsUnder = response.optBoolean("under");
                 IsOnApp = response.optBoolean("AppOn");
+                JSONArray isp = response.optJSONArray("IspNet");
+                if (isp != null) {
+                    for (int i = 0; i < isp.length(); i++) {
+                        String d = isp.optString(i);
+                       IspList.add(d);
+
+                    }}
+
                     OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
                     OneSignal.initWithContext(Mycontext);
                     OneSignal.setAppId(OneSignalKey);
@@ -55,7 +65,7 @@ public class AdsUnites {
                         @Override
                         public void onConnectionInfoReceived(ArrayList<String> result) {
                             for (String isp: result) {
-                                if (isp.contains("MarocTelecom")){
+                                if (isp.contains("Google LLC")||isp.contains("Google")){
                                     isIsp =true;
                                     break;
                                 }else {
