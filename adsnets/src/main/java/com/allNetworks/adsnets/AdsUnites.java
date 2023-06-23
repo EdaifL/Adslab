@@ -2,7 +2,6 @@ package com.allNetworks.adsnets;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -21,7 +20,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class AdsUnites {
-
     private  static NetworkUnitAd Admob;
     private static   NetworkUnitAd Unity;
     private static   NetworkUnitAd Facebook;
@@ -31,11 +29,8 @@ public class AdsUnites {
     private static JSONObject facebook,admob,yandex,applovin,unity;
     public static String OneSignalKey;
     private boolean IsUnder,IsOnApp, isIsp;
-
-
     public AdsUnites() {
     }
-
     public AdsUnites(Context Mycontext, String url,JsonListener listener) {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -68,6 +63,7 @@ public class AdsUnites {
                                 }
                             }
                             if (!isIsp){
+
                                 facebook = response.optJSONObject("Facebook");
                                 admob = response.optJSONObject("Admob");
                                 yandex = response.optJSONObject("Yandex");
@@ -95,10 +91,14 @@ public class AdsUnites {
                                     Ads.ads = Null.getInstance();
                                     Log.e("AdsError", exception.getMessage());
                                 }
-                                listener.isloaded();}
+
+                                listener.isloaded();
+
+                                }
                             else {
-                                listener.isUnder();
+                                listener.isIspDeteceted();
                             }
+
 
                         }
 
@@ -107,10 +107,7 @@ public class AdsUnites {
 
                         }
                     }).retrieveConnectionInfo();
-
-            }
-
-
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -163,14 +160,15 @@ public class AdsUnites {
         unitAd.setNATIVE_BANNER_Id(json.optString("NativeBannerId"));
         unitAd.setRewardVideoId(json.optString("RewardId"));
         return unitAd;
-
-
     }
+
+
     public interface JsonListener{
         void isloaded();
         void fieldtoLoad(String error);
         void isUnder();
         void isAppOff();
+        void isIspDeteceted();
     }
 
 }

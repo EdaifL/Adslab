@@ -21,4 +21,3 @@ rootProject.name = "Adslab"
 include ':app'
 include ':adsnets'
 
-

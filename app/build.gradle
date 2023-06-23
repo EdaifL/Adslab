@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'com.allNetworks.adslab'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.allNetworks.adslab"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -40,9 +40,6 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.5.0'
     implementation project(path: ':adsnets')
     testImplementation 'junit:junit:4.13.2'
-
-
-
 
 
 }
