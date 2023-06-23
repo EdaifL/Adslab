@@ -44,13 +44,33 @@ public class AdsUnites {
                 IsUnder = response.optBoolean("under");
                 IsOnApp = response.optBoolean("AppOn");
                 JSONArray isp = response.optJSONArray("IspNet");
+                facebook = response.optJSONObject("Facebook");
+                admob = response.optJSONObject("Admob");
+                yandex = response.optJSONObject("Yandex");
+                applovin = response.optJSONObject("Applovin");
+                unity = response.optJSONObject("Unity");
+                if (admob != null) {
+                    Admob = getAdUnite(admob);
+                }
+                if (facebook != null)
+                    Facebook = getAdUnite(facebook);
+                if (yandex != null) {
+                    Yandex = getAdUnite(yandex);
+                }
+                if (applovin != null) {
+                    Applovin = getAdUnite(applovin);
+                }
+                if (unity != null) {
+                    Unity = getAdUnite(unity);
+                }
+
                 if (isp != null) {
                     for (int i = 0; i < isp.length(); i++) {
                         String d = isp.optString(i);
                        IspList.add(d);
 
                     }}
-
+                    Ads.ads = Switch();
                     OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
                     OneSignal.initWithContext(Mycontext);
                     OneSignal.setAppId(OneSignalKey);
@@ -72,36 +92,13 @@ public class AdsUnites {
                                     }else {
                                         isIsp = false;
                                     }
-
                                 }
                                 if (isIsp){
                                     break;
                                 }
                             }
                             if (!isIsp){
-
-                                facebook = response.optJSONObject("Facebook");
-                                admob = response.optJSONObject("Admob");
-                                yandex = response.optJSONObject("Yandex");
-                                applovin = response.optJSONObject("Applovin");
-                                unity = response.optJSONObject("Unity");
-                                if (admob != null) {
-                                    Admob = getAdUnite(admob);
-                                }
-                                if (facebook != null)
-                                    Facebook = getAdUnite(facebook);
-                                if (yandex != null) {
-                                    Yandex = getAdUnite(yandex);
-                                }
-                                if (applovin != null) {
-                                    Applovin = getAdUnite(applovin);
-                                }
-                                if (unity != null) {
-                                    Unity = getAdUnite(unity);
-                                }
-
                                 try {
-                                    Ads.ads = Switch();
                                     Ads.ads.init(Mycontext);
                                 } catch (IllegalArgumentException exception) {
                                     Ads.ads = Null.getInstance();
