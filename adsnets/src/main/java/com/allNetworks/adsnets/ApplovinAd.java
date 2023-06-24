@@ -341,7 +341,7 @@ public class ApplovinAd implements AdsManage {
     }
 
     @Override
-    public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
+    public void Show_Native(Context context, LinearLayout linearLayout) {
         if (!Native_Unite.isEmpty()){
         nativeAdLoader = new MaxNativeAdLoader( Native_Unite, context );
         nativeAdLoader.setNativeAdListener( new MaxNativeAdListener()
@@ -349,7 +349,7 @@ public class ApplovinAd implements AdsManage {
             @Override
             public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, final MaxAd ad)
             {
-                if (imageView !=null){imageView.setVisibility(View.GONE);}
+               linearLayout.removeAllViews();
                 nativeAd = ad;
                 linearLayout.addView( nativeAdView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 900) );
 

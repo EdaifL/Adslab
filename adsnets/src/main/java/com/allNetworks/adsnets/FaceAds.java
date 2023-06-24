@@ -207,7 +207,7 @@ public class FaceAds implements AdsManage {
 
 
     @Override
-    public void Show_Native(final Context context, final LinearLayout linearLayout , final ImageView imageView) {
+    public void Show_Native(final Context context, final LinearLayout linearLayout) {
 
         nativeAd = new NativeAd(context, Native_Unite);
 
@@ -225,7 +225,7 @@ public class FaceAds implements AdsManage {
 
             @Override
             public void onAdLoaded(Ad ad) {
-                if (imageView != null){imageView.setVisibility(View.GONE);}
+               linearLayout.removeAllViews();
                 NativeAdViewAttributes viewAttributes = new NativeAdViewAttributes(context)
                         .setBackgroundColor(Color.WHITE)
                         .setTitleTextColor(Color.BLACK)

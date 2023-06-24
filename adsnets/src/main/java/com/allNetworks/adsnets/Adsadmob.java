@@ -194,8 +194,8 @@ public class Adsadmob implements AdsManage{
     }
 
     @Override
-    public void Show_Native(Context context, LinearLayout linearLayout , ImageView imageView) {
-     new nativeadmob().NativeAds(context,linearLayout,imageView);
+    public void Show_Native(Context context, LinearLayout linearLayout ) {
+     new nativeadmob().NativeAds(context,linearLayout);
   }
     @Override
     public void Show_NativeBanner(Context context, LinearLayout linearLayout) {
@@ -383,11 +383,11 @@ public class Adsadmob implements AdsManage{
         private void NativeBannerAdview(NativeAd nativeAd, NativeAdView adView){
 
         }
-        public void NativeAds(Context context , LinearLayout linearLayout, ImageView imageView) {
+        public void NativeAds(Context context , LinearLayout linearLayout) {
             FrameLayout frameLayout = new FrameLayout(context);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
             frameLayout.setLayoutParams(lp);
-            linearLayout.addView(frameLayout);
+
             AdLoader.Builder builder = new AdLoader.Builder(context, NativeUnit);
             builder.forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
                 @Override
@@ -395,7 +395,7 @@ public class Adsadmob implements AdsManage{
                     if (nativeAd != null) {
                         nativeAd.destroy();
                     }
-                    if (imageView != null){imageView.setVisibility(View.GONE);}
+
                     nativeAd = unifiedNativeAd;
 
                     activity = (Activity)context;
@@ -404,6 +404,8 @@ public class Adsadmob implements AdsManage{
                     populateUnifiedNativeAdView(unifiedNativeAd, adView);
                     frameLayout.removeAllViews();
                     frameLayout.addView(adView);
+                    linearLayout.removeAllViews();
+                    linearLayout.addView(frameLayout);
 
                 }
             });

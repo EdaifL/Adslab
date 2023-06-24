@@ -11,7 +11,7 @@ public interface AdsManage {
     void Show_Banner(Activity activity, LinearLayout linearLayout);
     void Show_Interstitial(Context context , Interstital interstital);
     boolean loadInter(Context context);
-    void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView);
+    void Show_Native(Context context, LinearLayout linearLayout);
     void Show_NativeBanner(Context context, LinearLayout linearLayout );
     void LoadReward(Context context);
     void Show_Reward(Context context,Reward rewardA);

@@ -156,7 +156,7 @@ public class UnityAd implements AdsManage {
     }
 
     @Override
-    public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
+    public void Show_Native(Context context, LinearLayout linearLayout) {
 
     }
     @Override

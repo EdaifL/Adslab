@@ -228,7 +228,7 @@ public class YandexClass implements AdsManage {
 
 
     @Override
-    public void Show_Native(Context context, LinearLayout linearLayout, ImageView imageView) {
+    public void Show_Native(Context context, LinearLayout linearLayout) {
         if (!Native_Unite.isEmpty()){
         final NativeAdLoader nativeAdLoader = new NativeAdLoader(context);
         final NativeAdRequestConfiguration nativeAdRequestConfiguration =
@@ -237,9 +237,7 @@ public class YandexClass implements AdsManage {
         nativeAdLoader.setNativeAdLoadListener(new NativeAdLoadListener() {
             @Override
             public void onAdLoaded(@NonNull NativeAd nativeAd) {
-                if (imageView!=null){
-                    imageView.setVisibility(View.GONE);
-                }
+               linearLayout.removeAllViews();
                 final NativeBannerView nativeBannerView = new NativeBannerView(context);
                 nativeBannerView.setAd(nativeAd);
                 linearLayout.addView(nativeBannerView,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
