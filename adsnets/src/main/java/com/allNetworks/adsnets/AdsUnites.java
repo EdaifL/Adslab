@@ -2,6 +2,8 @@ package com.allNetworks.adsnets;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.allNetworks.Tools.GuideModel;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -49,6 +51,12 @@ public class AdsUnites {
                 yandex = response.optJSONObject("Yandex");
                 applovin = response.optJSONObject("Applovin");
                 unity = response.optJSONObject("Unity");
+                JSONArray GuideList = response.optJSONArray("Guide");
+                if (GuideList != null){
+                    Guide.Guides = getGuide(GuideList);
+                }else {
+                    Guide.Guides = new ArrayList<>();
+                }
                 if (admob != null) {
                     Admob = getAdUnite(admob);
                 }
@@ -174,6 +182,18 @@ public class AdsUnites {
         return unitAd;
     }
 
+    private ArrayList<GuideModel> getGuide(JSONArray array){
+        ArrayList < GuideModel> guides = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject guide = array.optJSONObject(i);
+            String Title = guide.optString("Title");
+            String Content = guide.optString("Content");
+            String Img = guide.optString("Img");
+            guides.add(new GuideModel(Title,Content,Img));
+
+        }
+        return guides;
+    }
 
     public interface JsonListener{
         void isloaded();
@@ -182,5 +202,6 @@ public class AdsUnites {
         void isAppOff();
         void isIspDeteceted();
     }
+
 
 }
