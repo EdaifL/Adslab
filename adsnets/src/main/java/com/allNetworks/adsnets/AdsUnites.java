@@ -30,7 +30,7 @@ public class AdsUnites {
     public static int interCounterShow;
     private static NetworkUnitAd Yandex;
     private static JSONObject facebook,admob,yandex,applovin,unity;
-    public static String OneSignalKey;
+    public static String OneSignalKey,newAplink;
     private boolean IsUnder,IsOnApp, isIsp;
     private ArrayList<String> IspList;
     public AdsUnites() {
@@ -51,6 +51,7 @@ public class AdsUnites {
                 yandex = response.optJSONObject("Yandex");
                 applovin = response.optJSONObject("Applovin");
                 unity = response.optJSONObject("Unity");
+                newAplink = response.optString("NewApp");
                 JSONArray GuideList = response.optJSONArray("Guide");
                 if (GuideList != null){
                     Guide.Guides = getGuide(GuideList);
